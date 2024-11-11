@@ -26,18 +26,17 @@ class MenuItemBox2D {
   final Body body;
   final Vector2 originPosition;
   final double speed;
+  final double collisionSpeed;
 
   MenuItemBox2D({
     required this.value,
     required this.body,
     required this.originPosition,
     this.speed = 300.0,
+    this.collisionSpeed = 100.0,
   }) {
     _originMassData = body.getMassData().clone();
   }
-
-  bool isMovingByUser = false;
-  bool isCollided = false;
 
   Offset get currentPosition => body.position.toOffset();
 
@@ -48,13 +47,55 @@ class MenuItemBox2D {
 
   late MassData _originMassData;
 
+  /// true -> user is moving the item a
+  bool get isPrioritized => _isPrioritized;
+
+  set prioritized(bool value) {
+    _isPrioritized = value;
+  }
+
+  bool _isPrioritized = false;
+
+  bool get isCollided => _isCollided;
+  set collided(bool value) {
+    _isCollided = value;
+  }
+
+  bool _isCollided = false;
+
+  void onPanStart() {
+    prioritized = true;
+  }
+
+  void onPanEnd() {
+    reposition();
+  }
+
+  void onPanUpdate(Offset offset) {
+    _setTransform(offset);
+  }
+
+  void collidedWithTheOther(
+    Vector2 direction, [
+    Duration duration = Durations.medium3,
+  ]) {
+    Vector2 impulse = direction * collisionSpeed;
+    collided = true;
+    body.applyLinearImpulse(impulse, point: body.worldCenter);
+
+    Future<void>.delayed(duration).then((_) {
+      collided = false;
+      reposition();
+    });
+  }
+
   /// move the body towards to origin position
   void reposition() {
-    if (isMovingByUser || isCollided) {
+    if (isCollided) {
       return;
     }
     if (isAtOriginPosition) {
-      body.linearVelocity = Vector2.zero();
+      _clearVelocityAndShake();
     } else {
       var direction = originPosition -
           Vector2(
@@ -67,17 +108,15 @@ class MenuItemBox2D {
   }
 
   void checkCurrentPositionAndStop() {
-    if (isAtOriginPosition && !isCollided) {
-      body.linearVelocity = Vector2.zero();
+    if (isAtOriginPosition &&
+        !_isCollided &&
+        body.linearVelocity != Vector2.zero()) {
+      _clearVelocityAndShake();
     }
   }
 
-  void setMovingByUser(bool value) {
-    isMovingByUser = value;
-  }
-
   /// call [Body] setTransform, keep origin angle
-  void setTransform(Offset offset) {
+  void _setTransform(Offset offset) {
     body.setTransform(
       Vector2(
         currentPosition.dx + offset.dx,
@@ -87,8 +126,9 @@ class MenuItemBox2D {
     );
   }
 
-  void _resetMassData() {
-    body.setMassData(_originMassData);
+  void _clearVelocityAndShake() {
+    prioritized = false;
+    body.linearVelocity = Vector2.zero();
   }
 
   @override

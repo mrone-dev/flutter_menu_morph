@@ -62,35 +62,17 @@ class _DraggableMenuItemState extends State<DraggableMenuItem>
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    itemBox2D.setTransform(details.delta);
+    itemBox2D.onPanUpdate(details.delta);
   }
 
   void _onPanEnd(DragEndDetails details) {
-    print('onPanEnd ${details.localPosition}');
-    itemBox2D.setMovingByUser(false);
     widget.controller.userStopMovingItems();
-    itemBox2D.reposition();
-    // widget.itemBox2D.body.setTransform(
-    //   widget.itemBox2D.originPosition,
-    //   widget.itemBox2D.body.angle,
-    // );
-    // _animation = Tween(
-    //   begin: itemBox2D.currentPosition,
-    //   end: itemBox2D.originPosition.toOffset(),
-    // ).animate(
-    //   CurvedAnimation(
-    //     parent: _animationCtrl,
-    //     curve: Curves.linear,
-    //   ),
-    // );
-
-    // _animationCtrl.forward(from: 0);
+    itemBox2D.onPanEnd();
   }
 
   void _onPanStart(DragStartDetails details) {
-    itemBox2D.setMovingByUser(true);
+    itemBox2D.onPanStart();
     widget.controller.userMovingItems();
-    print('_onPanStart');
     if (_animationCtrl.isAnimating) {
       _animationCtrl.stop();
     }
