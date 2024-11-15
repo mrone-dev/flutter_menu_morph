@@ -20,13 +20,13 @@ const like = 'sample';
 ```
 
 ## TODO list
-  - [ ] MVP version
+  - [x] MVP version
   ### Menu morph
-  - [ ] Hexagon
+  - [x] Hexagon
   - [ ] Triangle
   - [ ] Rectangle
   ### Animation
-  - [ ] Animation after the item goes back to origin position
+  - [x] Animation after the item goes back to origin position
   - [ ] Options to add more animation type after the item goes back to origin position
   - [ ] Item initialize animation or loading animation when fetching menu list
   ### Menu actions
@@ -35,3 +35,6 @@ const like = 'sample';
   - [ ] Disabled item
   ### Shape
   - [ ] Allow to add custom shape instead of circle
+  ### Responsive
+  - [ ] Handle device rotation
+  - [ ] Responsive UI (item's radius, spacing)
