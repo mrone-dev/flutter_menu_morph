@@ -1,10 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/models/models.dart';
 import 'package:forge2d/forge2d.dart';
+// ignore: implementation_imports
 import 'package:forge2d/src/settings.dart' as settings;
 
 import 'menu_contact_listener.dart';
@@ -14,7 +13,7 @@ enum MenuStateStatus {
   completed,
 }
 
-class MenuBox2DState extends Equatable {
+class MenuBox2DState {
   final MenuItemBox2D parent;
   final Map<int, MenuItemBox2D> children;
 
@@ -22,9 +21,6 @@ class MenuBox2DState extends Equatable {
     required this.parent,
     required this.children,
   });
-
-  @override
-  List<Object?> get props => [parent, children];
 }
 
 class MenuBox2DController with ChangeNotifier {
