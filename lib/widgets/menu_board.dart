@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:forge2d/forge2d.dart';
 
-import 'controllers/canvas_draw.dart';
-import 'controllers/menu_controller.dart';
+import '../controllers/menu_controller.dart';
 import 'debug_painter.dart';
-import 'draggable_menu_item.dart';
-import 'models/models.dart';
+import 'draggable_item/draggable_menu_item.dart';
+import '../models/models.dart';
 
 class MenuBoard extends StatefulWidget {
   final MenuBoardConfiguration configuration;
@@ -26,7 +24,6 @@ class _MenuBoardState extends State<MenuBoard>
   );
   late final MenuBox2DController _menuController;
 
-  World get _world => _menuController.world;
   Size get _boardSizePixels => _menuController.boardSizePixels;
   bool get _isDebug => widget.configuration.isDebug;
 
@@ -44,14 +41,7 @@ class _MenuBoardState extends State<MenuBoard>
   @override
   void didUpdateWidget(covariant MenuBoard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Update the world size on board size update
-    // if (oldWidget.boardSizePixels != widget.boardSizePixels) {
-    // ref
-    //     .read(Providers.box2dController)
-    //     .updateWorldSizeFromPixelSize(widget.boardSizePixels);
-
-    // _resizeImages();
-    // }
+    // TODO handle rotation
   }
 
   @override
@@ -75,9 +65,10 @@ class _MenuBoardState extends State<MenuBoard>
           return Stack(
             fit: StackFit.expand,
             children: [
-              _buildDebugDraw(),
+              if (_isDebug) _buildDebugDraw(),
               ..._menuController.children.map(
                 (e) => DraggableMenuItem(
+                  key: e.globalKey,
                   controller: _menuController,
                   itemBox2D: e,
                 ),

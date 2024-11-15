@@ -56,7 +56,7 @@ class MenuBox2DController with ChangeNotifier {
   late PictureRecorder recorder;
 
   void initialize() {
-    settings.maxTranslation = 3.0;
+    settings.maxTranslation = 4.0;
     world = World(Vector2.zero());
 
     var centerPosition =

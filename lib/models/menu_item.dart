@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/extensions/extensions.dart';
+import 'package:flutter_menu_morph/widgets/widgets.dart';
 import 'package:forge2d/forge2d.dart';
 
 class MenuItem {
@@ -32,10 +33,10 @@ class MenuItemBox2D {
     required this.value,
     required this.body,
     required this.originPosition,
-    this.speed = 300.0,
-    this.collisionSpeed = 100.0,
+    this.speed = 500.0,
+    this.collisionSpeed = 200.0,
   }) {
-    _originMassData = body.getMassData().clone();
+    globalKey = GlobalKey<DraggableMenuItemState>();
   }
 
   Offset get currentPosition => body.position.toOffset();
@@ -45,7 +46,9 @@ class MenuItemBox2D {
   // radius is 10 atm
   bool get isAtOriginPosition => (body.position - originPosition).length < 5;
 
-  late MassData _originMassData;
+  late GlobalKey<DraggableMenuItemState> globalKey;
+
+  DraggableMenuItemState? get _widgetState => globalKey.currentState;
 
   /// true -> user is moving the item a
   bool get isPrioritized => _isPrioritized;
@@ -68,7 +71,7 @@ class MenuItemBox2D {
   }
 
   void onPanEnd() {
-    reposition();
+    _reposition();
   }
 
   void onPanUpdate(Offset offset) {
@@ -85,12 +88,24 @@ class MenuItemBox2D {
 
     Future<void>.delayed(duration).then((_) {
       collided = false;
-      reposition();
+      _reposition();
     });
   }
 
+  void checkCurrentPositionAndStop() {
+    if (isAtOriginPosition &&
+        !_isCollided &&
+        body.linearVelocity != Vector2.zero()) {
+      _clearVelocityAndShake();
+    }
+  }
+
+  void stopShakeAnimation() {
+    _widgetState?.stopShakeAnimation();
+  }
+
   /// move the body towards to origin position
-  void reposition() {
+  void _reposition() {
     if (isCollided) {
       return;
     }
@@ -104,14 +119,6 @@ class MenuItemBox2D {
           );
       direction.normalize();
       body.linearVelocity = direction * speed;
-    }
-  }
-
-  void checkCurrentPositionAndStop() {
-    if (isAtOriginPosition &&
-        !_isCollided &&
-        body.linearVelocity != Vector2.zero()) {
-      _clearVelocityAndShake();
     }
   }
 
@@ -129,6 +136,7 @@ class MenuItemBox2D {
   void _clearVelocityAndShake() {
     prioritized = false;
     body.linearVelocity = Vector2.zero();
+    _widgetState?.startShakeAnimation();
   }
 
   @override

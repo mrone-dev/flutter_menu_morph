@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'menu_board.dart';
-import 'models/menu_board_configuration.dart';
+import '../models/menu_board_configuration.dart';
 
 class ExampleScreen extends StatefulWidget {
   const ExampleScreen({super.key});

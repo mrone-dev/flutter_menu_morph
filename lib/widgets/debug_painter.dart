@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'models/models.dart';
+import '../models/models.dart';
 
 class DebugPainter extends CustomPainter {
   final List<MenuItemBox2D> menuItems;

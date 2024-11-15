@@ -6,8 +6,8 @@ class MenuContactListener extends ContactListener {
   void beginContact(Contact contact) {
     var bodyA = contact.bodyA;
     var bodyB = contact.bodyB;
-    var itemA = (bodyA.userData as MenuItemBox2D);
-    var itemB = (bodyB.userData as MenuItemBox2D);
+    var itemA = (bodyA.userData as MenuItemBox2D)..stopShakeAnimation();
+    var itemB = (bodyB.userData as MenuItemBox2D)..stopShakeAnimation();
     var isPrioritizedA = itemA.isPrioritized;
     var isPrioritizedB = itemB.isPrioritized;
     if (isPrioritizedA && !isPrioritizedB) {
