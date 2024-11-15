@@ -23,9 +23,6 @@ class DraggableMenuItem extends StatefulWidget {
 
 class DraggableMenuItemState extends State<DraggableMenuItem>
     with SingleTickerProviderStateMixin, DraggableMenuItemAnimationMixin {
-  // late final AnimationController _animationCtrl;
-  // late Animation<double> _animation;
-
   MenuItemBox2D get _itemBox2D => widget.itemBox2D;
 
   MenuItem get _item => widget.itemBox2D.value;
