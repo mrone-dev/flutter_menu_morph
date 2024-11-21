@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_menu_morph/models/models.dart';
 
 import '../controllers/menu_controller.dart';
 import 'debug_painter.dart';
 import 'draggable_item/draggable_menu_item.dart';
-import '../models/models.dart';
 
-class MenuBoard extends StatefulWidget {
-  final MenuBoardConfiguration configuration;
+class MenuBoard<T> extends StatefulWidget {
+  final MenuBoardConfiguration<T> configuration;
+  final ValueChanged<MenuBox2DController>? onMenuCreated;
+
   const MenuBoard({
     required this.configuration,
+    this.onMenuCreated,
     super.key,
   });
 
@@ -32,6 +35,7 @@ class _MenuBoardState extends State<MenuBoard>
     super.initState();
     _menuController = MenuBox2DController(configuration: widget.configuration)
       ..initialize();
+    widget.onMenuCreated?.call(_menuController);
     _animationCtrl.addListener(() {
       _onAnimationUpdate();
     });

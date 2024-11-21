@@ -26,6 +26,7 @@ class MenuBox2DState {
 class MenuBox2DController with ChangeNotifier {
   final MenuBoardConfiguration configuration;
   MenuBox2DController({required this.configuration});
+
   MenuStateStatus status = MenuStateStatus.pending;
   late final World world;
   late final MenuBox2DState state;
@@ -49,8 +50,6 @@ class MenuBox2DController with ChangeNotifier {
 
   Picture? picture;
 
-  late PictureRecorder recorder;
-
   void initialize() {
     settings.maxTranslation = 4.0;
     world = World(Vector2.zero());
@@ -59,23 +58,27 @@ class MenuBox2DController with ChangeNotifier {
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
     status = MenuStateStatus.completed;
 
+    // TODO: check with other types
     var positions = _drawHexagonCircles(
       centerPosition,
-      configuration.parent.radius,
-      configuration.children.first.radius,
+      configuration.parentRadius,
+      configuration.childRadius,
       boardSizePixels.width,
       boardSizePixels.height,
       16.0,
     );
-    var parent = _createMenuItemBox2D(configuration.parent, centerPosition);
-    var children = configuration.children;
+    var parent = _createMenuItemBox2D(
+      centerPosition,
+      configuration.parentRadius,
+    );
+
     state = MenuBox2DState(
       parent: parent,
       children: List.generate(
-        children.length,
+        configuration.type.count,
         (index) => _createMenuItemBox2D(
-          children.elementAt(index),
           positions.elementAt(index),
+          configuration.childRadius,
         ),
       ).asMap(),
     );
@@ -105,19 +108,23 @@ class MenuBox2DController with ChangeNotifier {
     notifyListeners();
   }
 
-  void setDebugDraw([DebugDraw? debugDraw]) {
-    world.debugDraw = debugDraw;
+  void updateMenuBoardData<T>(MenuBoardData<T> data) {
+    configuration.updateMenuBoardData(data);
+    notifyListeners();
   }
 
-  MenuItemBox2D _createMenuItemBox2D(MenuItem item, Vector2 position) {
+  MenuItemBox2D _createMenuItemBox2D(
+    Vector2 position,
+    double radius,
+  ) {
     var body = _createMenuItemBody(
       position,
-      item.radius,
+      radius,
     );
     var box2D = MenuItemBox2D(
-      value: item,
       body: body,
       originPosition: position,
+      radius: radius,
     );
     body.userData = box2D;
     return box2D;

@@ -3,36 +3,64 @@ import 'package:flutter_menu_morph/extensions/extensions.dart';
 import 'package:flutter_menu_morph/widgets/widgets.dart';
 import 'package:forge2d/forge2d.dart';
 
-class MenuItem {
-  final String name;
-  final String imageName;
+typedef MenuItemWidgetBuilder<T> = Widget Function(
+  BuildContext context,
+  T data,
+);
 
-  /// [radius] of parent will be prioritized.
-  /// If there is available space for children
-  /// [radius] will be applied to child
-  final double radius;
+typedef MenuItemCallback<T> = void Function(T data);
+
+class MenuBoardData<T> {
+  final MenuItem<T> parent;
+  final List<MenuItem<T>> children;
+
+  const MenuBoardData({
+    required this.parent,
+    required this.children,
+  });
+
+  void updateParent(MenuItem<T> parent) => _copyWith(parent: parent);
+
+  void updateChildren(List<MenuItem<T>> children) =>
+      _copyWith(children: children);
+
+  MenuBoardData<T> _copyWith({
+    MenuItem<T>? parent,
+    List<MenuItem<T>>? children,
+  }) =>
+      MenuBoardData<T>(
+        parent: parent ?? this.parent,
+        children: children ?? this.children,
+      );
+}
+
+// TODO add shape
+class MenuItem<T> {
+  final T data;
+  final MenuItemWidgetBuilder<T> itemBuilder;
+  final MenuItemCallback<T>? onPressed;
 
   MenuItem({
-    required this.name,
-    required this.imageName,
-    required this.radius,
+    required this.data,
+    required this.itemBuilder,
+    this.onPressed,
   });
 
   @override
-  String toString() => 'MenuItem($name, [$radius])';
+  String toString() => 'MenuItem($data)';
 }
 
 class MenuItemBox2D {
-  final MenuItem value;
   final Body body;
   final Vector2 originPosition;
   final double speed;
   final double collisionSpeed;
+  final double radius;
 
   MenuItemBox2D({
-    required this.value,
     required this.body,
     required this.originPosition,
+    required this.radius,
     this.speed = 500.0,
     this.collisionSpeed = 200.0,
   }) {
@@ -40,8 +68,6 @@ class MenuItemBox2D {
   }
 
   Offset get currentPosition => body.position.toOffset();
-
-  double get radius => value.radius;
 
   // radius is 10 atm
   bool get isAtOriginPosition => (body.position - originPosition).length < 5;
@@ -140,5 +166,5 @@ class MenuItemBox2D {
   }
 
   @override
-  String toString() => 'MenuItemBox2D($value)';
+  String toString() => 'MenuItemBox2D(originPosition: $originPosition)';
 }
