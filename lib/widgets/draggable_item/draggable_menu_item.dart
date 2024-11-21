@@ -6,7 +6,8 @@ import 'package:forge2d/forge2d.dart' hide Transform;
 
 import '../../controllers/menu_controller.dart';
 
-part 'draggable_menu_item_animation.dart';
+part 'loading_menu_item_animation.dart';
+part 'shake_menu_item_animation.dart';
 
 class DraggableMenuItem extends StatefulWidget {
   final MenuItemBox2D itemBox2D;
@@ -22,15 +23,18 @@ class DraggableMenuItem extends StatefulWidget {
 }
 
 class DraggableMenuItemState extends State<DraggableMenuItem>
-    with SingleTickerProviderStateMixin, DraggableMenuItemAnimationMixin {
+    with
+        TickerProviderStateMixin,
+        ShakeMenuItemAnimationMixin,
+        LoadingMenuItemAnimation {
   MenuItemBox2D get _itemBox2D => widget.itemBox2D;
 
-  MenuItem get _item => widget.itemBox2D.value;
+  // MenuItem get _item => widget.itemBox2D.value;
 
   @override
   void initState() {
     super.initState();
-    _initAnimationController(this);
+    _initShakeAnimationController(this);
   }
 
   @override
@@ -71,10 +75,6 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
       builder: (_, child) {
         Vector2? offset;
         if (_shakeAnimationCtrl.isAnimating) {
-          // print('_animationCtrl ${_animationCtrl.value}');
-          // double sineValue = math.sin(
-          //   _item.shakeLevels.pulse * 2 * math.pi * _animation.value,
-          // );
           offset = _shakeAnimation.value;
         }
 
@@ -117,9 +117,9 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
           ),
         ],
       ),
-      child: Center(
+      child: const Center(
         child: Text(
-          _item.name,
+          '_item.name',
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
