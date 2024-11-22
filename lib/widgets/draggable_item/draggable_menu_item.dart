@@ -12,9 +12,11 @@ part 'shake_menu_item_animation.dart';
 class DraggableMenuItem extends StatefulWidget {
   final MenuItemBox2D itemBox2D;
   final MenuBox2DController controller;
+  final MenuItem? item;
   const DraggableMenuItem({
     required this.controller,
     required this.itemBox2D,
+    this.item,
     super.key,
   });
 
@@ -29,7 +31,7 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
         LoadingMenuItemAnimation {
   MenuItemBox2D get _itemBox2D => widget.itemBox2D;
 
-  // MenuItem get _item => widget.itemBox2D.value;
+  MenuItem? get _item => widget.item;
 
   @override
   void initState() {
@@ -46,11 +48,9 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
   @override
   void didUpdateWidget(covariant DraggableMenuItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // if (itemBox2D.position.x != _position.dx ||
-    //     itemBox2D.position.y != _position.dy) {
-    //   _getLatestPosition();
-    //   setState(() {});
-    // }
+    if (_item != widget.item) {
+      setState(() {});
+    }
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -103,6 +103,10 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
   }
 
   Widget _buildMenuItem() {
+    if (widget.item != null) {
+      return widget.item!.itemBuilder(context, widget.item);
+    }
+    // TODO loading widget
     return Container(
       width: widget.itemBox2D.radius * 2,
       height: widget.itemBox2D.radius * 2,

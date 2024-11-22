@@ -70,7 +70,7 @@ class _MenuBoardState extends State<MenuBoard>
             fit: StackFit.expand,
             children: [
               if (_isDebug) _buildDebugDraw(),
-              ..._menuController.children.map(
+              ..._menuController.childrenBox.map(
                 (e) => DraggableMenuItem(
                   key: e.globalKey,
                   controller: _menuController,
@@ -79,7 +79,7 @@ class _MenuBoardState extends State<MenuBoard>
               ),
               DraggableMenuItem(
                 controller: _menuController,
-                itemBox2D: _menuController.parent,
+                itemBox2D: _menuController.parentBox,
               ),
             ],
           );

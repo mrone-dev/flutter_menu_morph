@@ -8,42 +8,27 @@ import 'package:forge2d/src/settings.dart' as settings;
 
 import 'menu_contact_listener.dart';
 
-enum MenuStateStatus {
-  pending,
-  completed,
-}
-
-class MenuBox2DState {
-  final MenuItemBox2D parent;
-  final Map<int, MenuItemBox2D> children;
-
-  const MenuBox2DState({
-    required this.parent,
-    required this.children,
-  });
-}
-
 class MenuBox2DController with ChangeNotifier {
   final MenuBoardConfiguration configuration;
   MenuBox2DController({required this.configuration});
 
   MenuStateStatus status = MenuStateStatus.pending;
   late final World world;
-  late final MenuBox2DState state;
+  late final MenuState state;
 
   Size get boardSizePixels => configuration.boardSizePixels;
 
-  MenuItemBox2D get parent => state.parent;
+  MenuItemBox2D get parentBox => state.parentBox;
 
-  Iterable<MenuItemBox2D> get children => state.children.values;
+  Iterable<MenuItemBox2D> get childrenBox => state.childrenBox.values;
   Iterable<MenuItemBox2D> get allMenuItemsBox2D => [
-        parent,
-        ...children,
+        parentBox,
+        ...childrenBox,
       ];
 
   Iterable<Body> get allBodies => [
-        parent.body,
-        ...children.map((e) => e.body),
+        parentBox.body,
+        ...childrenBox.map((e) => e.body),
       ];
 
   bool get isDebug => configuration.isDebug;
@@ -56,7 +41,6 @@ class MenuBox2DController with ChangeNotifier {
 
     var centerPosition =
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
-    status = MenuStateStatus.completed;
 
     // TODO: check with other types
     var positions = _drawHexagonCircles(
@@ -72,9 +56,9 @@ class MenuBox2DController with ChangeNotifier {
       configuration.parentRadius,
     );
 
-    state = MenuBox2DState(
-      parent: parent,
-      children: List.generate(
+    state = MenuState(
+      parentBox: parent,
+      childrenBox: List.generate(
         configuration.type.count,
         (index) => _createMenuItemBox2D(
           positions.elementAt(index),
@@ -83,6 +67,7 @@ class MenuBox2DController with ChangeNotifier {
       ).asMap(),
     );
     world.setContactListener(MenuContactListener());
+    status = MenuStateStatus.completed;
     notifyListeners();
   }
 
@@ -109,7 +94,12 @@ class MenuBox2DController with ChangeNotifier {
   }
 
   void updateMenuBoardData<T>(MenuBoardData<T> data) {
-    configuration.updateMenuBoardData(data);
+    var type = configuration.type;
+    var length = data.children.length;
+    assert(type == MenuMorphType.hexagon ? length == 6 : true);
+    assert(type == MenuMorphType.triangle ? length == 3 : true);
+    assert(type == MenuMorphType.rectangle ? length == 4 : true);
+    state.updateMenuBoardData(data);
     notifyListeners();
   }
 
@@ -142,7 +132,6 @@ class MenuBox2DController with ChangeNotifier {
       allowSleep: false,
       fixedRotation: true,
       linearVelocity: linearVelocity,
-      // bullet: true,
     );
 
     var body = world.createBody(bodyDef);

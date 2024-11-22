@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/extensions/extensions.dart';
 import 'package:flutter_menu_morph/widgets/widgets.dart';
@@ -35,16 +36,19 @@ class MenuBoardData<T> {
 }
 
 // TODO add shape
-class MenuItem<T> {
+class MenuItem<T> extends Equatable {
   final T data;
   final MenuItemWidgetBuilder<T> itemBuilder;
   final MenuItemCallback<T>? onPressed;
 
-  MenuItem({
+  const MenuItem({
     required this.data,
     required this.itemBuilder,
     this.onPressed,
   });
+
+  @override
+  List<Object?> get props => [data, itemBuilder, onPressed];
 
   @override
   String toString() => 'MenuItem($data)';
