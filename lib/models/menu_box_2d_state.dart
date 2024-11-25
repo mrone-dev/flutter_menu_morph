@@ -19,13 +19,13 @@ class MenuState<T> {
     required this.childrenBox,
     this.initialData,
   });
-  late MenuBoardData<T>? _data;
+  MenuBoardData<T>? _data;
 
   bool get hasData => _data != null;
 
-  MenuItem<T> get parent => _data!.parent;
+  MenuItem<T>? get parent => _data?.parent;
 
-  List<MenuItem<T>> get children => _data!.children;
+  List<MenuItem<T>> get children => _data?.children ?? [];
 
   void updateMenuBoardData(MenuBoardData<T> data) {
     _data = data;

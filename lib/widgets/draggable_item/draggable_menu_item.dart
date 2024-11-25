@@ -9,10 +9,10 @@ import '../../controllers/menu_controller.dart';
 part 'loading_menu_item_animation.dart';
 part 'shake_menu_item_animation.dart';
 
-class DraggableMenuItem extends StatefulWidget {
+class DraggableMenuItem<T> extends StatefulWidget {
   final MenuItemBox2D itemBox2D;
-  final MenuBox2DController controller;
-  final MenuItem? item;
+  final MenuBox2DController<T> controller;
+  final MenuItem<T>? item;
   const DraggableMenuItem({
     required this.controller,
     required this.itemBox2D,
@@ -21,10 +21,10 @@ class DraggableMenuItem extends StatefulWidget {
   });
 
   @override
-  State<DraggableMenuItem> createState() => DraggableMenuItemState();
+  State<DraggableMenuItem<T>> createState() => DraggableMenuItemState<T>();
 }
 
-class DraggableMenuItemState extends State<DraggableMenuItem>
+class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
     with
         TickerProviderStateMixin,
         ShakeMenuItemAnimationMixin,
@@ -42,11 +42,12 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
   @override
   void dispose() {
     _shakeAnimationCtrl.dispose();
+    _loadingAnimationCtrl.dispose();
     super.dispose();
   }
 
   @override
-  void didUpdateWidget(covariant DraggableMenuItem oldWidget) {
+  void didUpdateWidget(covariant DraggableMenuItem<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_item != widget.item) {
       setState(() {});
@@ -104,7 +105,7 @@ class DraggableMenuItemState extends State<DraggableMenuItem>
 
   Widget _buildMenuItem() {
     if (widget.item != null) {
-      return widget.item!.itemBuilder(context, widget.item);
+      return widget.item!.itemBuilder(context, widget.item!.data);
     }
     // TODO loading widget
     return Container(

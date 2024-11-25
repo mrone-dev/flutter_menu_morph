@@ -1,6 +1,6 @@
 part of 'draggable_menu_item.dart';
 
-const int _animationDuration = 1000;
+const int _shakeDuration = 1000;
 const List<(double, double)> _steps = [
   // (radius, weight - % of duration)
   (0.5, 0.4),
@@ -10,7 +10,7 @@ const List<(double, double)> _steps = [
   (0.1, 0.05),
 ];
 
-mixin ShakeMenuItemAnimationMixin on State<DraggableMenuItem> {
+mixin ShakeMenuItemAnimationMixin<T> on State<DraggableMenuItem<T>> {
   late final AnimationController _shakeAnimationCtrl;
   late Animation<Vector2> _shakeAnimation;
 
@@ -30,7 +30,7 @@ mixin ShakeMenuItemAnimationMixin on State<DraggableMenuItem> {
   void _initShakeAnimationController(DraggableMenuItemState state) {
     _shakeAnimationCtrl = AnimationController(
       vsync: state,
-      duration: const Duration(milliseconds: _animationDuration),
+      duration: const Duration(milliseconds: _shakeDuration),
     );
 
     _shakeAnimationCtrl.addListener(() {
@@ -61,27 +61,23 @@ mixin ShakeMenuItemAnimationMixin on State<DraggableMenuItem> {
   ) {
     Vector2 position =
         _getRandomPositionInCircle(step.$1 * widget.itemBox2D.radius);
-
+    var weight = (step.$2 / 2) / _shakeDuration;
     return [
       TweenSequenceItem<Vector2>(
         tween: Tween<Vector2>(
           begin: _originPosition,
           end: _originPosition + position,
         ).chain(CurveTween(curve: Curves.linear)),
-        weight: _fractionate(step.$2 / 2),
+        weight: weight,
       ),
       TweenSequenceItem<Vector2>(
         tween: Tween<Vector2>(
           begin: _originPosition + position,
           end: _originPosition,
         ).chain(CurveTween(curve: Curves.fastOutSlowIn)),
-        weight: _fractionate(step.$2 / 2),
+        weight: weight,
       ),
     ];
-  }
-
-  double _fractionate(num value, {num total = _animationDuration}) {
-    return value / total;
   }
 
   Vector2 _getRandomPositionInCircle(double radius) {

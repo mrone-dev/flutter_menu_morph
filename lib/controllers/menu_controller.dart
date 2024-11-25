@@ -8,32 +8,31 @@ import 'package:forge2d/src/settings.dart' as settings;
 
 import 'menu_contact_listener.dart';
 
-class MenuBox2DController with ChangeNotifier {
+class MenuBox2DController<T> with ChangeNotifier {
   final MenuBoardConfiguration configuration;
   MenuBox2DController({required this.configuration});
 
   MenuStateStatus status = MenuStateStatus.pending;
   late final World world;
-  late final MenuState state;
+  late final MenuState<T> state;
 
   Size get boardSizePixels => configuration.boardSizePixels;
 
   MenuItemBox2D get parentBox => state.parentBox;
 
-  Iterable<MenuItemBox2D> get childrenBox => state.childrenBox.values;
+  Iterable<MapEntry<int, MenuItemBox2D>> get childrenBox =>
+      state.childrenBox.entries;
   Iterable<MenuItemBox2D> get allMenuItemsBox2D => [
         parentBox,
-        ...childrenBox,
+        ...state.childrenBox.values,
       ];
 
   Iterable<Body> get allBodies => [
         parentBox.body,
-        ...childrenBox.map((e) => e.body),
+        ...state.childrenBox.values.map((e) => e.body),
       ];
 
   bool get isDebug => configuration.isDebug;
-
-  Picture? picture;
 
   void initialize() {
     settings.maxTranslation = 4.0;
@@ -93,7 +92,7 @@ class MenuBox2DController with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateMenuBoardData<T>(MenuBoardData<T> data) {
+  void updateMenuBoardData(MenuBoardData<T> data) {
     var type = configuration.type;
     var length = data.children.length;
     assert(type == MenuMorphType.hexagon ? length == 6 : true);

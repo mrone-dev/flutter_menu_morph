@@ -12,14 +12,16 @@ class ExampleScreen extends StatefulWidget {
 }
 
 class _ExampleScreenState extends State<ExampleScreen> {
-  late MenuBox2DController _menuController;
+  late MenuBox2DController<CarCategory> _menuController;
 
-  void _onMenuCreated(MenuBox2DController controller) async {
+  void _onMenuCreated(
+    MenuBox2DController<CarCategory> controller,
+  ) async {
     _menuController = controller;
 
     // fetch data
     Future.delayed(const Duration(seconds: 2)).then((_) {
-      _menuController.updateMenuBoardData<CarCategory>(
+      _menuController.updateMenuBoardData(
         MenuBoardData(
           parent: _getMenuItem(CarCategory.parent()),
           children: [
@@ -49,7 +51,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return MenuBoard(
+          return MenuBoard<CarCategory>(
             onMenuCreated: _onMenuCreated,
             configuration: MenuBoardConfiguration(
               boardSizePixels: constraints.biggest,

@@ -7,7 +7,7 @@ import 'draggable_item/draggable_menu_item.dart';
 
 class MenuBoard<T> extends StatefulWidget {
   final MenuBoardConfiguration<T> configuration;
-  final ValueChanged<MenuBox2DController>? onMenuCreated;
+  final ValueChanged<MenuBox2DController<T>>? onMenuCreated;
 
   const MenuBoard({
     required this.configuration,
@@ -16,25 +16,27 @@ class MenuBoard<T> extends StatefulWidget {
   });
 
   @override
-  State<MenuBoard> createState() => _MenuBoardState();
+  State<MenuBoard<T>> createState() => _MenuBoardState<T>();
 }
 
-class _MenuBoardState extends State<MenuBoard>
+class _MenuBoardState<T> extends State<MenuBoard<T>>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationCtrl = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 10),
   );
-  late final MenuBox2DController _menuController;
+  late final MenuBox2DController<T> _menuController;
 
   Size get _boardSizePixels => _menuController.boardSizePixels;
   bool get _isDebug => widget.configuration.isDebug;
+  MenuState<T> get _menuState => _menuController.state;
 
   @override
   void initState() {
     super.initState();
-    _menuController = MenuBox2DController(configuration: widget.configuration)
-      ..initialize();
+    _menuController =
+        MenuBox2DController<T>(configuration: widget.configuration)
+          ..initialize();
     widget.onMenuCreated?.call(_menuController);
     _animationCtrl.addListener(() {
       _onAnimationUpdate();
@@ -43,7 +45,7 @@ class _MenuBoardState extends State<MenuBoard>
   }
 
   @override
-  void didUpdateWidget(covariant MenuBoard oldWidget) {
+  void didUpdateWidget(covariant MenuBoard<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // TODO handle rotation
   }
@@ -59,6 +61,10 @@ class _MenuBoardState extends State<MenuBoard>
     _menuController.update();
   }
 
+  MenuItem<T>? _getChildMenuItemByIndex(int index) {
+    return _menuState.children.elementAtOrNull(index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -71,15 +77,20 @@ class _MenuBoardState extends State<MenuBoard>
             children: [
               if (_isDebug) _buildDebugDraw(),
               ..._menuController.childrenBox.map(
-                (e) => DraggableMenuItem(
-                  key: e.globalKey,
-                  controller: _menuController,
-                  itemBox2D: e,
-                ),
+                (entry) {
+                  var value = entry.value;
+                  return DraggableMenuItem<T>(
+                    key: value.globalKey,
+                    controller: _menuController,
+                    itemBox2D: value,
+                    item: _getChildMenuItemByIndex(entry.key),
+                  );
+                },
               ),
-              DraggableMenuItem(
+              DraggableMenuItem<T>(
                 controller: _menuController,
                 itemBox2D: _menuController.parentBox,
+                item: _menuState.parent,
               ),
             ],
           );
