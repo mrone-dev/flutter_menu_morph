@@ -1,18 +1,5 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+# Flutter Menu Morph
+This package for Flutter. This package idea was inspired by Glovo application.
 
 ## Features
 
@@ -32,8 +19,22 @@ to `/example` folder.
 const like = 'sample';
 ```
 
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## TODO list
+  - [x] MVP version
+  ### Menu morph
+  - [x] Hexagon
+  - [ ] Triangle
+  - [ ] Rectangle
+  ### Animation
+  - [x] Animation after the item goes back to origin position
+  - [ ] Options to add more animation type after the item goes back to origin position
+  - [ ] Item initialize animation or loading animation when fetching menu list
+  ### Menu actions
+  - [ ] Add "on press" CTA
+  - [ ] Handle nested categories
+  - [ ] Disabled item
+  ### Shape
+  - [ ] Allow to add custom shape instead of circle
+  ### Responsive
+  - [ ] Handle device rotation
+  - [ ] Responsive UI (item's radius, spacing)
