@@ -29,6 +29,9 @@ const like = 'sample';
   - [x] Animation after the item goes back to origin position
   - [ ] Options to add more animation type after the item goes back to origin position
   - [ ] Item initialize animation or loading animation when fetching menu list
+      - [ ] Style 1: parent only - **90%**
+      - [ ] Style 2: parent then children sequentially (have delay)
+      - [ ] Style 3: parent and children start animation at the same time
   ### Menu actions
   - [ ] Add "on press" CTA
   - [ ] Handle nested categories
@@ -38,3 +41,5 @@ const like = 'sample';
   ### Responsive
   - [ ] Handle device rotation
   - [ ] Responsive UI (item's radius, spacing)
+## TO VERIFY
+  - [ ] Already has data (without fetch data from BE) then starts animation once.
