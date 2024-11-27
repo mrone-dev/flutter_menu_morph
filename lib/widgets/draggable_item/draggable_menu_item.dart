@@ -3,19 +3,21 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/models/models.dart';
 import 'package:forge2d/forge2d.dart' hide Transform;
+import 'package:provider/provider.dart';
 
 import '../../controllers/menu_controller.dart';
 
 part 'loading_menu_item_animation.dart';
 part 'shake_menu_item_animation.dart';
 
+// TODO: too many flags for building widgets, need to optimize
 class DraggableMenuItem<T> extends StatefulWidget {
   final MenuItemBox2D itemBox2D;
-  final MenuBox2DController<T> controller;
   final MenuItem<T>? item;
+  final int index;
   const DraggableMenuItem({
-    required this.controller,
     required this.itemBox2D,
+    required this.index,
     this.item,
     super.key,
   });
@@ -29,28 +31,37 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
         TickerProviderStateMixin,
         ShakeMenuItemAnimationMixin,
         LoadingMenuItemAnimation {
+  late final MenuBox2DController _controller;
   MenuItemBox2D get _itemBox2D => widget.itemBox2D;
 
   MenuItem? get _item => widget.item;
 
+  bool get _isLoading => hasLoadingAnimation && _item == null;
+
+  bool get _hasItem => _item != null;
+
   @override
   void initState() {
     super.initState();
+    _controller = context.read<MenuBox2DController<T>>();
     _initShakeAnimationController(this);
+    var style = _controller.configuration.loadingAnimationStyle;
+    _initLoadingAnimationController(this, style);
   }
 
   @override
   void dispose() {
     _shakeAnimationCtrl.dispose();
-    _loadingAnimationCtrl.dispose();
+    _loadingAnimationCtrl?.dispose();
     super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant DraggableMenuItem<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_item != widget.item) {
+    if (oldWidget.item != widget.item) {
       setState(() {});
+      _stopLoadingAnimation();
     }
   }
 
@@ -59,13 +70,13 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
   }
 
   void _onPanEnd(DragEndDetails details) {
-    widget.controller.userStopMovingItems();
+    _controller.userStopMovingItems();
     _itemBox2D.onPanEnd();
   }
 
   void _onPanStart(DragStartDetails details) {
     _itemBox2D.onPanStart();
-    widget.controller.userMovingItems();
+    _controller.userMovingItems();
     stopShakeAnimation();
   }
 
@@ -86,50 +97,54 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
           child: child!,
         );
       },
-      child: _buildGestureItem(),
+      child: FractionalTranslation(
+        translation: const Offset(-.5, -.5),
+        child: hasLoadingAnimation || _item != null
+            ? _buildGestureItem()
+            : const SizedBox.square(),
+      ),
     );
   }
 
   Widget _buildGestureItem() {
-    return FractionalTranslation(
-      translation: const Offset(-.5, -.5),
+    return IgnorePointer(
+      ignoring: !_hasItem,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
-        child: _buildMenuItem(),
+        child: hasLoadingAnimation
+            ? _buildTransformScale(
+                child: _buildMenuItem(),
+              )
+            : _buildMenuItem(),
       ),
     );
   }
 
   Widget _buildMenuItem() {
-    if (widget.item != null) {
-      return widget.item!.itemBuilder(context, widget.item!.data);
-    }
-    // TODO loading widget
-    return Container(
-      width: widget.itemBox2D.radius * 2,
-      height: widget.itemBox2D.radius * 2,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset.zero,
-          ),
-        ],
-      ),
-      child: const Center(
-        child: Text(
-          '_item.name',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
-          ),
+    return AnimatedSwitcher(
+      duration: Durations.medium1,
+      child: Container(
+        width: _itemBox2D.radius * 2,
+        height: _itemBox2D.radius * 2,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: Offset.zero,
+            ),
+          ],
+        ),
+        child: AnimatedSwitcher(
+          duration: Durations.medium1,
+          child: _isLoading
+              ? const SizedBox.square()
+              : widget.item?.itemBuilder(context, widget.item!.data),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/models/models.dart';
 import 'package:forge2d/forge2d.dart';
@@ -11,6 +11,8 @@ import 'menu_contact_listener.dart';
 class MenuBox2DController<T> with ChangeNotifier {
   final MenuBoardConfiguration configuration;
   MenuBox2DController({required this.configuration});
+
+  static const int parentIndex = -1;
 
   MenuStateStatus status = MenuStateStatus.pending;
   late final World world;

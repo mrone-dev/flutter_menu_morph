@@ -20,7 +20,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
     _menuController = controller;
 
     // fetch data
-    Future.delayed(const Duration(seconds: 2)).then((_) {
+    Future.delayed(const Duration(seconds: 5)).then((_) {
       _menuController.updateMenuBoardData(
         MenuBoardData(
           parent: _getMenuItem(CarCategory.parent()),
@@ -67,6 +67,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
 
   Widget _buildCategory(CarCategory category) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AutoSizeText(
           category.name,

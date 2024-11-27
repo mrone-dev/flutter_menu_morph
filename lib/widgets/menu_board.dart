@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/models/models.dart';
+import 'package:provider/provider.dart';
 
 import '../controllers/menu_controller.dart';
 import 'debug_painter.dart';
@@ -69,33 +70,41 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints.loose(_boardSizePixels),
-      child: ListenableBuilder(
-        listenable: _menuController,
-        builder: (context, _) {
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              if (_isDebug) _buildDebugDraw(),
-              ..._menuController.childrenBox.map(
-                (entry) {
-                  var value = entry.value;
-                  return DraggableMenuItem<T>(
-                    key: value.globalKey,
-                    controller: _menuController,
-                    itemBox2D: value,
-                    item: _getChildMenuItemByIndex(entry.key),
-                  );
-                },
-              ),
-              DraggableMenuItem<T>(
-                controller: _menuController,
-                itemBox2D: _menuController.parentBox,
-                item: _menuState.parent,
-              ),
-            ],
+      child: ChangeNotifierProvider.value(
+        value: _menuController,
+        builder: (_, __) {
+          return Consumer<MenuBox2DController<T>>(
+            builder: (_, __, ___) {
+              return _buildMainBoard();
+            },
           );
         },
       ),
+    );
+  }
+
+  Widget _buildMainBoard() {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (_isDebug) _buildDebugDraw(),
+        ..._menuController.childrenBox.map(
+          (entry) {
+            var value = entry.value;
+            return DraggableMenuItem<T>(
+              key: value.globalKey,
+              itemBox2D: value,
+              item: _getChildMenuItemByIndex(entry.key),
+              index: entry.key,
+            );
+          },
+        ),
+        DraggableMenuItem<T>(
+          itemBox2D: _menuController.parentBox,
+          item: _menuState.parent,
+          index: MenuBox2DController.parentIndex,
+        ),
+      ],
     );
   }
 
