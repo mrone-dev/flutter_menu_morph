@@ -32,6 +32,7 @@ const like = 'sample';
       - [ ] Style 1: parent only - **90%**
       - [ ] Style 2: parent then children sequentially (have delay)
       - [ ] Style 3: parent and children start animation at the same time
+  - [ ] Customize animation (weight, duration, curve)
   ### Menu actions
   - [ ] Add "on press" CTA
   - [ ] Handle nested categories
