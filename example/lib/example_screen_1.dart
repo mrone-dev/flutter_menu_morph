@@ -4,14 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/flutter_menu_morph.dart';
 import 'package:svg_flutter/svg_flutter.dart';
 
-class ExampleScreen extends StatefulWidget {
-  const ExampleScreen({super.key});
+/// Fetch data from BE
+class ExampleScreen1 extends StatefulWidget {
+  final MenuMorphType type;
+  final LoadingAnimationStyle style;
+  const ExampleScreen1({
+    required this.type,
+    required this.style,
+    super.key,
+  });
 
   @override
-  State<ExampleScreen> createState() => _ExampleScreenState();
+  State<ExampleScreen1> createState() => _ExampleScreen1State();
 }
 
-class _ExampleScreenState extends State<ExampleScreen> {
+class _ExampleScreen1State extends State<ExampleScreen1> {
   late MenuBox2DController<CarCategory> _menuController;
 
   void _onMenuCreated(
@@ -55,7 +62,8 @@ class _ExampleScreenState extends State<ExampleScreen> {
             onMenuCreated: _onMenuCreated,
             configuration: MenuBoardConfiguration(
               boardSizePixels: constraints.biggest,
-              type: MenuMorphType.hexagon,
+              type: widget.type,
+              loadingAnimationStyle: widget.style,
               parentRadius: 60,
               childRadius: 50,
             ),

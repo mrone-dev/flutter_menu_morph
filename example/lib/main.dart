@@ -1,39 +1,143 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_menu_morph/flutter_menu_morph.dart';
 
-import 'example_screen.dart';
+import 'example_screen_1.dart';
+import 'example_screen_2.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  MenuMorphType _selectedType = MenuMorphType.hexagon;
+  LoadingAnimationStyle _selectedAnimationType = LoadingAnimationStyle.style1;
+
+  void _onChangedMorphType(MenuMorphType type) {
+    setState(() {
+      _selectedType = type;
+    });
+  }
+
+  void _onChangedAnimationType(LoadingAnimationStyle style) {
+    setState(() {
+      _selectedAnimationType = style;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ExampleScreen(),
+      home: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildTypeCheckboxes(),
+            const SizedBox(height: 24.0),
+            _buildAnimationTypeCheckboxes(),
+            const SizedBox(height: 48.0),
+            const Text('Scenario'),
+            const SizedBox(height: 16.0),
+            _buildButton(
+              text: 'Fetch data from BE',
+              child: ExampleScreen1(
+                type: _selectedType,
+                style: _selectedAnimationType,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            _buildButton(
+              text: 'Already have data',
+              child: ExampleScreen2(
+                type: _selectedType,
+                style: _selectedAnimationType,
+              ),
+            ),
+            const SizedBox(height: 16.0)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTypeCheckboxes() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var type in MenuMorphType.values) ...[
+          _buildCheckBox(
+            value: type == _selectedType,
+            onChanged: (isSelected) {
+              if (isSelected ?? false) {
+                _onChangedMorphType(type);
+              }
+            },
+          ),
+          Text(type.name),
+          const Spacer(),
+        ]
+      ],
+    );
+  }
+
+  Widget _buildAnimationTypeCheckboxes() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var type in LoadingAnimationStyle.values) ...[
+          _buildCheckBox(
+            value: type == _selectedAnimationType,
+            onChanged: (isSelected) {
+              if (isSelected ?? false) {
+                _onChangedAnimationType(type);
+              }
+            },
+          ),
+          Text(type.name),
+          const Spacer(),
+        ]
+      ],
+    );
+  }
+
+  Widget _buildCheckBox<T>({
+    required bool value,
+    required ValueChanged<bool?> onChanged,
+  }) {
+    return Checkbox(
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+
+  Widget _buildButton({
+    required String text,
+    required Widget child,
+  }) {
+    return Builder(
+      builder: (context) {
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => child));
+          },
+          child: Text(
+            text,
+            style: const TextStyle(color: Colors.black),
+          ),
+        );
+      },
     );
   }
 }

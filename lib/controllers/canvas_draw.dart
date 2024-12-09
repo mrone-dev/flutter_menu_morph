@@ -12,9 +12,9 @@ class Forge2DPainter extends CustomPainter {
   bool check = false;
   @override
   void paint(Canvas canvas, Size size) {
-    if (controller.picture != null) {
-      canvas.drawPicture(controller.picture!);
-    }
+    // if (controller.picture != null) {
+    //   canvas.drawPicture(controller.picture!);
+    // }
   }
 
   @override
