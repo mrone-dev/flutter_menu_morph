@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_menu_morph/flutter_menu_morph.dart';
 
+import 'car_category_mixin.dart';
+import 'example_data_model.dart';
+
 /// Data is ready, no needs to load from BE
 class ExampleScreen2 extends StatefulWidget {
   final MenuMorphType type;
@@ -15,9 +18,37 @@ class ExampleScreen2 extends StatefulWidget {
   State<ExampleScreen2> createState() => _ExampleScreen2State();
 }
 
-class _ExampleScreen2State extends State<ExampleScreen2> {
+class _ExampleScreen2State extends State<ExampleScreen2> with CarCategoryMixin {
+  late MenuBox2DController<CarCategory> _menuController;
+
+  void _onMenuCreated(
+    MenuBox2DController<CarCategory> controller,
+  ) async {
+    _menuController = controller;
+  }
+
+  MenuBoardData<CarCategory> _getInitialData() {
+    return getExampleData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return MenuBoard<CarCategory>(
+            onMenuCreated: _onMenuCreated,
+            initialData: _getInitialData(),
+            configuration: MenuBoardConfiguration(
+              boardSizePixels: constraints.biggest,
+              type: widget.type,
+              loadingAnimationStyle: widget.style,
+              parentRadius: 60,
+              childRadius: 50,
+            ),
+          );
+        },
+      ),
+    );
   }
 }
