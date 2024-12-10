@@ -33,6 +33,10 @@ class MenuBoardData<T> {
         parent: parent ?? this.parent,
         children: children ?? this.children,
       );
+
+  @override
+  String toString() =>
+      'Parent: $parent, children: ${children.map((e) => '$e ')}';
 }
 
 // TODO add shape
@@ -68,7 +72,7 @@ class MenuItemBox2D {
     this.speed = 500.0,
     this.collisionSpeed = 200.0,
   }) {
-    globalKey = GlobalKey<DraggableMenuItemState>();
+    globalKey = GlobalKey<BaseDraggableItemState>();
   }
 
   Offset get currentPosition => body.position.toOffset();
@@ -76,9 +80,9 @@ class MenuItemBox2D {
   // radius is 10 atm
   bool get isAtOriginPosition => (body.position - originPosition).length < 5;
 
-  late GlobalKey<DraggableMenuItemState> globalKey;
+  late GlobalKey<BaseDraggableItemState> globalKey;
 
-  DraggableMenuItemState? get _widgetState => globalKey.currentState;
+  BaseDraggableItemState? get _widgetState => globalKey.currentState;
 
   /// true -> user is moving the item a
   bool get isPrioritized => _isPrioritized;

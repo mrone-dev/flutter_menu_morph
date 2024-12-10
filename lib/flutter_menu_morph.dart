@@ -7,5 +7,6 @@ export 'models/models.dart'
         MenuItem,
         MenuBoardData,
         MenuMorphType,
-        LoadingAnimationStyle;
+        LoadingAnimationStyle,
+        LoadingConfiguration;
 export 'widgets/menu_board.dart';

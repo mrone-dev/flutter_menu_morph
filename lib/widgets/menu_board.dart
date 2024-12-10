@@ -4,15 +4,17 @@ import 'package:provider/provider.dart';
 
 import '../controllers/menu_controller.dart';
 import 'debug_painter.dart';
-import 'draggable_item/draggable_menu_item.dart';
+import 'draggable_item/draggable_item.dart';
 
 class MenuBoard<T> extends StatefulWidget {
   final MenuBoardConfiguration<T> configuration;
   final ValueChanged<MenuBox2DController<T>>? onMenuCreated;
+  final MenuBoardData<T>? initialData;
 
   const MenuBoard({
     required this.configuration,
     this.onMenuCreated,
+    this.initialData,
     super.key,
   });
 
@@ -35,9 +37,10 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
   @override
   void initState() {
     super.initState();
-    _menuController =
-        MenuBox2DController<T>(configuration: widget.configuration)
-          ..initialize();
+    _menuController = MenuBox2DController<T>(
+      configuration: widget.configuration,
+      initialData: widget.initialData,
+    )..initialize();
     widget.onMenuCreated?.call(_menuController);
     _animationCtrl.addListener(() {
       _onAnimationUpdate();
@@ -91,7 +94,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
         ..._menuController.childrenBox.map(
           (entry) {
             var value = entry.value;
-            return DraggableMenuItem<T>(
+            return DraggableChildItem<T>(
               key: value.globalKey,
               itemBox2D: value,
               item: _getChildMenuItemByIndex(entry.key),
@@ -99,7 +102,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
             );
           },
         ),
-        DraggableMenuItem<T>(
+        DraggableParentItem<T>(
           itemBox2D: _menuController.parentBox,
           item: _menuState.parent,
           index: MenuBox2DController.parentIndex,

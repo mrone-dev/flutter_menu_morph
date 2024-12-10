@@ -18,7 +18,9 @@ class MenuState<T> {
     required this.parentBox,
     required this.childrenBox,
     this.initialData,
-  });
+  }) {
+    _data = initialData;
+  }
   MenuBoardData<T>? _data;
 
   bool get hasData => _data != null;

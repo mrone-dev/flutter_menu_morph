@@ -11,7 +11,7 @@ enum MenuMorphType {
 
 enum LoadingAnimationStyle {
   /// parent only
-  /// it means only display parent and
+  /// it means only display parent animation
   style1,
 
   /// parent then children sequentially (have delay)
@@ -27,7 +27,7 @@ class MenuBoardConfiguration<T> {
   final double parentRadius;
   final double childRadius;
   final EdgeInsetsGeometry padding;
-  final LoadingAnimationStyle loadingAnimationStyle;
+  final LoadingConfiguration loadingConfiguration;
 
   final bool isDebug;
 
@@ -39,9 +39,26 @@ class MenuBoardConfiguration<T> {
     required this.parentRadius,
     required this.childRadius,
     this.padding = const EdgeInsets.all(16.0),
-    this.loadingAnimationStyle = LoadingAnimationStyle.style1,
+    this.loadingConfiguration = LoadingConfiguration.style1,
 
     /// will enable [world.drawDebugData]
     this.isDebug = false,
   });
+
+  LoadingAnimationStyle get loadingAnimationStyle => loadingConfiguration.style;
+}
+
+class LoadingConfiguration {
+  final LoadingAnimationStyle style;
+  final Duration duration;
+
+  const LoadingConfiguration({
+    required this.style,
+    required this.duration,
+  });
+
+  static const style1 = LoadingConfiguration(
+    style: LoadingAnimationStyle.style1,
+    duration: Duration(seconds: 1),
+  );
 }

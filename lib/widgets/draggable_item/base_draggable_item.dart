@@ -1,21 +1,10 @@
-import 'dart:math' as math;
+part of 'draggable_item.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_menu_morph/models/models.dart';
-import 'package:forge2d/forge2d.dart' hide Transform;
-import 'package:provider/provider.dart';
-
-import '../../controllers/menu_controller.dart';
-
-part 'loading_menu_item_animation.dart';
-part 'shake_menu_item_animation.dart';
-
-// TODO: too many flags for building widgets, need to optimize
-class DraggableMenuItem<T> extends StatefulWidget {
+class BaseDraggableItem<T> extends StatefulWidget {
   final MenuItemBox2D itemBox2D;
   final MenuItem<T>? item;
   final int index;
-  const DraggableMenuItem({
+  const BaseDraggableItem({
     required this.itemBox2D,
     required this.index,
     this.item,
@@ -23,30 +12,36 @@ class DraggableMenuItem<T> extends StatefulWidget {
   });
 
   @override
-  State<DraggableMenuItem<T>> createState() => DraggableMenuItemState<T>();
+  State<BaseDraggableItem<T>> createState() => BaseDraggableItemState<T>();
 }
 
-class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
+class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
     with
         TickerProviderStateMixin,
-        ShakeMenuItemAnimationMixin,
-        LoadingMenuItemAnimation {
+        _ShakeItemAnimationMixin,
+        _BaseLoadingItemAnimation {
   late final MenuBox2DController _controller;
+
   MenuItemBox2D get _itemBox2D => widget.itemBox2D;
 
   MenuItem? get _item => widget.item;
 
-  bool get _isLoading => hasLoadingAnimation && _item == null;
+  @override
+  bool get isParent => throw UnimplementedError();
 
-  bool get _hasItem => _item != null;
+  @override
+  int get itemIndex => throw UnimplementedError();
 
   @override
   void initState() {
     super.initState();
     _controller = context.read<MenuBox2DController<T>>();
     _initShakeAnimationController(this);
-    var style = _controller.configuration.loadingAnimationStyle;
-    _initLoadingAnimationController(this, style);
+    _initLoadingAnimationController(
+      this,
+      config: _controller.configuration.loadingConfiguration,
+      hasInitialData: widget.item != null,
+    );
   }
 
   @override
@@ -57,9 +52,9 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
   }
 
   @override
-  void didUpdateWidget(covariant DraggableMenuItem<T> oldWidget) {
+  void didUpdateWidget(covariant BaseDraggableItem<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.item != widget.item) {
+    if (oldWidget.item != widget.item && mounted) {
       setState(() {});
       _stopLoadingAnimation();
     }
@@ -99,16 +94,17 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
       },
       child: FractionalTranslation(
         translation: const Offset(-.5, -.5),
+        // child: hasLoadingAnimation || _item != null
         child: hasLoadingAnimation || _item != null
             ? _buildGestureItem()
-            : const SizedBox.square(),
+            : const SizedBox.shrink(),
       ),
     );
   }
 
   Widget _buildGestureItem() {
     return IgnorePointer(
-      ignoring: !_hasItem,
+      ignoring: isAnimating,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanStart: _onPanStart,
@@ -118,35 +114,27 @@ class DraggableMenuItemState<T> extends State<DraggableMenuItem<T>>
             ? _buildTransformScale(
                 child: _buildMenuItem(),
               )
-            : _buildMenuItem(),
+            : _buildNoLoadingAnimation(child: _buildMenuItem()),
       ),
     );
   }
 
   Widget _buildMenuItem() {
-    return AnimatedSwitcher(
-      duration: Durations.medium1,
-      child: Container(
-        width: _itemBox2D.radius * 2,
-        height: _itemBox2D.radius * 2,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: Offset.zero,
-            ),
-          ],
-        ),
-        child: AnimatedSwitcher(
-          duration: Durations.medium1,
-          child: _isLoading
-              ? const SizedBox.square()
-              : widget.item?.itemBuilder(context, widget.item!.data),
-        ),
+    return Container(
+      width: _itemBox2D.radius * 2,
+      height: _itemBox2D.radius * 2,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: Offset.zero,
+          ),
+        ],
       ),
+      child: widget.item?.itemBuilder(context, widget.item!.data),
     );
   }
 }

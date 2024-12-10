@@ -10,7 +10,11 @@ import 'menu_contact_listener.dart';
 
 class MenuBox2DController<T> with ChangeNotifier {
   final MenuBoardConfiguration configuration;
-  MenuBox2DController({required this.configuration});
+  final MenuBoardData<T>? initialData;
+  MenuBox2DController({
+    required this.configuration,
+    this.initialData,
+  });
 
   static const int parentIndex = -1;
 
@@ -24,6 +28,7 @@ class MenuBox2DController<T> with ChangeNotifier {
 
   Iterable<MapEntry<int, MenuItemBox2D>> get childrenBox =>
       state.childrenBox.entries;
+
   Iterable<MenuItemBox2D> get allMenuItemsBox2D => [
         parentBox,
         ...state.childrenBox.values,
@@ -59,6 +64,7 @@ class MenuBox2DController<T> with ChangeNotifier {
 
     state = MenuState(
       parentBox: parent,
+      initialData: initialData,
       childrenBox: List.generate(
         configuration.type.count,
         (index) => _createMenuItemBox2D(
