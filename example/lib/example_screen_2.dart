@@ -34,6 +34,7 @@ class _ExampleScreen2State extends State<ExampleScreen2> with CarCategoryMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return MenuBoard<CarCategory>(
@@ -42,7 +43,10 @@ class _ExampleScreen2State extends State<ExampleScreen2> with CarCategoryMixin {
             configuration: MenuBoardConfiguration(
               boardSizePixels: constraints.biggest,
               type: widget.type,
-              loadingAnimationStyle: widget.style,
+              loadingConfiguration: LoadingConfiguration(
+                style: widget.style,
+                duration: const Duration(seconds: 1),
+              ),
               parentRadius: 60,
               childRadius: 50,
             ),
