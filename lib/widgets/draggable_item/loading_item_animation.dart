@@ -1,27 +1,39 @@
-part of 'draggable_menu_item.dart';
+part of 'draggable_item.dart';
 
 const _delayStartDefault = 200;
 
-mixin LoadingMenuItemAnimation<T> on State<DraggableMenuItem<T>> {
+mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
   AnimationController? _loadingAnimationCtrl;
   late final Animation<double> _loadingAnimation;
+  late final LoadingConfiguration _config;
 
-  int get _itemIndex => widget.index;
+  /// style 1 flag: wait until parent's animation is finished
+  /// then display child
+  bool _isReady = false;
 
-  bool get _isParent => _itemIndex == MenuBox2DController.parentIndex;
+  bool _hasInitialData = false;
+
+  int get itemIndex;
+
+  bool get isParent;
 
   bool get hasLoadingAnimation => _loadingAnimationCtrl != null;
+
+  bool get isAnimating => _loadingAnimationCtrl?.isAnimating ?? false;
 
   void _stopLoadingAnimation() {
     _loadingAnimationCtrl?.stop();
   }
 
   void _initLoadingAnimationController(
-    DraggableMenuItemState state,
-    LoadingAnimationStyle style,
-  ) {
-    switch (style) {
-      case LoadingAnimationStyle.style1 when _isParent:
+    BaseDraggableItemState state, {
+    required LoadingConfiguration config,
+    bool hasInitialData = false,
+  }) {
+    _config = config;
+    _hasInitialData = hasInitialData;
+    switch (_config.style) {
+      case LoadingAnimationStyle.style1 when isParent:
       case LoadingAnimationStyle.style2:
         _setUpAnimationByStyle(state, true);
         break;
@@ -30,15 +42,21 @@ mixin LoadingMenuItemAnimation<T> on State<DraggableMenuItem<T>> {
         break;
       default:
     }
+
+    if (hasInitialData) {
+      _loadingAnimationCtrl?.forward();
+    } else {
+      _loadingAnimationCtrl?.repeat();
+    }
   }
 
   void _setUpAnimationByStyle(
-    DraggableMenuItemState state, [
+    BaseDraggableItemState state, [
     bool delay = false,
   ]) {
     _loadingAnimationCtrl = AnimationController(
       vsync: state,
-      duration: const Duration(seconds: 1),
+      duration: _config.duration,
     );
     var delayedAnimation = _DelayedCurvedAnimation(
       controller: _loadingAnimationCtrl!,
@@ -57,13 +75,12 @@ mixin LoadingMenuItemAnimation<T> on State<DraggableMenuItem<T>> {
         weight: 65.0,
       ),
     ]).animate(delayedAnimation);
-    _loadingAnimationCtrl?.repeat();
   }
 
   Duration _getDelayStartByItemIndex() {
-    return _isParent
+    return isParent
         ? Duration.zero
-        : Duration(milliseconds: _delayStartDefault * _itemIndex);
+        : Duration(milliseconds: _delayStartDefault * itemIndex);
   }
 
   Widget _buildTransformScale({required Widget child}) {
@@ -73,6 +90,28 @@ mixin LoadingMenuItemAnimation<T> on State<DraggableMenuItem<T>> {
         return Transform.scale(scale: _loadingAnimation.value, child: child);
       },
       child: child,
+    );
+  }
+
+  /// for style 1
+  Widget _buildNoLoadingAnimation({required Widget child}) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        if (!_isReady) {
+          Future<void>.delayed(
+            _hasInitialData ? _config.duration : Duration.zero,
+          ).then((_) {
+            setState(() {
+              _isReady = true;
+            });
+          });
+        }
+
+        return AnimatedSwitcher(
+          duration: _config.duration,
+          child: _isReady ? child : const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

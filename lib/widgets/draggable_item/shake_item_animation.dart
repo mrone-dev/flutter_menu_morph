@@ -1,4 +1,4 @@
-part of 'draggable_menu_item.dart';
+part of 'draggable_item.dart';
 
 const int _shakeDuration = 1000;
 const List<(double, double)> _steps = [
@@ -10,7 +10,7 @@ const List<(double, double)> _steps = [
   (0.1, 0.05),
 ];
 
-mixin ShakeMenuItemAnimationMixin<T> on State<DraggableMenuItem<T>> {
+mixin _ShakeItemAnimationMixin<T> on State<BaseDraggableItem<T>> {
   late final AnimationController _shakeAnimationCtrl;
   late Animation<Vector2> _shakeAnimation;
 
@@ -27,7 +27,7 @@ mixin ShakeMenuItemAnimationMixin<T> on State<DraggableMenuItem<T>> {
     }
   }
 
-  void _initShakeAnimationController(DraggableMenuItemState state) {
+  void _initShakeAnimationController(BaseDraggableItemState state) {
     _shakeAnimationCtrl = AnimationController(
       vsync: state,
       duration: const Duration(milliseconds: _shakeDuration),
