@@ -30,8 +30,8 @@ const like = 'sample';
   - [ ] Options to add more animation type after the item goes back to origin position
   - [ ] Item initialize animation or loading animation when fetching menu list
       - [x] Style 1: parent only
-      - [ ] Style 2: parent then children sequentially (have delay)
-      - [ ] Style 3: parent and children start animation at the same time
+      - [x] Style 2: parent then children sequentially (have delay)
+      - [x] Style 3: parent and children start animation at the same time
   - [ ] Customize animation (weight, duration, curve)
   ### Menu actions
   - [ ] Add "on press" CTA
