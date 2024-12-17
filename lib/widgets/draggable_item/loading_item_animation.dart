@@ -54,13 +54,14 @@ mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
     BaseDraggableItemState state, [
     bool delay = false,
   ]) {
+    var delayStart = delay ? _getDelayStartByItemIndex() : Duration.zero;
     _loadingAnimationCtrl = AnimationController(
       vsync: state,
-      duration: _config.duration,
+      duration: _config.duration + delayStart,
     );
     var delayedAnimation = _DelayedCurvedAnimation(
       controller: _loadingAnimationCtrl!,
-      delayStart: delay ? _getDelayStartByItemIndex() : Duration.zero,
+      delayStart: delayStart,
       curve: Curves.linear,
     );
     _loadingAnimation = TweenSequence<double>([
@@ -80,7 +81,7 @@ mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
   Duration _getDelayStartByItemIndex() {
     return isParent
         ? Duration.zero
-        : Duration(milliseconds: _delayStartDefault * itemIndex);
+        : Duration(milliseconds: _delayStartDefault * (itemIndex + 1));
   }
 
   Widget _buildTransformScale({required Widget child}) {
