@@ -51,14 +51,34 @@ class MenuBoardConfiguration<T> {
 class LoadingConfiguration {
   final LoadingAnimationStyle style;
   final Duration duration;
+  final List<TweenSequenceItem<double>> initialTweenSequenceItems;
 
   const LoadingConfiguration({
     required this.style,
     required this.duration,
+    this.initialTweenSequenceItems = const [],
   });
 
-  static const style1 = LoadingConfiguration(
+  List<TweenSequenceItem<double>> get tweenSequenceItems =>
+      initialTweenSequenceItems.isNotEmpty
+          ? initialTweenSequenceItems
+          : _default;
+
+  static const LoadingConfiguration style1 = LoadingConfiguration(
     style: LoadingAnimationStyle.style1,
     duration: Duration(seconds: 1),
   );
+
+  static final List<TweenSequenceItem<double>> _default = [
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 1.0, end: 0.85)
+          .chain(CurveTween(curve: Curves.easeInOut)),
+      weight: 35.0,
+    ),
+    TweenSequenceItem(
+      tween: Tween<double>(begin: 0.85, end: 1.0)
+          .chain(CurveTween(curve: Curves.bounceOut)),
+      weight: 65.0,
+    ),
+  ];
 }

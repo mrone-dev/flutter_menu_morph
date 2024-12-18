@@ -64,18 +64,8 @@ mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
       delayStart: delayStart,
       curve: Curves.linear,
     );
-    _loadingAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.85)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 35.0,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.85, end: 1.0)
-            .chain(CurveTween(curve: Curves.bounceOut)),
-        weight: 65.0,
-      ),
-    ]).animate(delayedAnimation);
+    _loadingAnimation = TweenSequence<double>(_config.tweenSequenceItems)
+        .animate(delayedAnimation);
   }
 
   Duration _getDelayStartByItemIndex() {
