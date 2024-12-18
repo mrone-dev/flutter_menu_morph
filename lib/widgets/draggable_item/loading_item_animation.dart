@@ -1,7 +1,5 @@
 part of 'draggable_item.dart';
 
-const _delayStartDefault = 200;
-
 mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
   AnimationController? _loadingAnimationCtrl;
   late final Animation<double> _loadingAnimation;
@@ -71,7 +69,7 @@ mixin _BaseLoadingItemAnimation<T> on State<BaseDraggableItem<T>> {
   Duration _getDelayStartByItemIndex() {
     return isParent
         ? Duration.zero
-        : Duration(milliseconds: _delayStartDefault * (itemIndex + 1));
+        : Duration(milliseconds: _config.delayStart * (itemIndex + 1));
   }
 
   Widget _buildTransformScale({required Widget child}) {

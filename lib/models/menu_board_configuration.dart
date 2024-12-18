@@ -52,11 +52,13 @@ class LoadingConfiguration {
   final LoadingAnimationStyle style;
   final Duration duration;
   final List<TweenSequenceItem<double>> initialTweenSequenceItems;
+  final int delayStart;
 
   const LoadingConfiguration({
     required this.style,
     required this.duration,
     this.initialTweenSequenceItems = const [],
+    this.delayStart = 200,
   });
 
   List<TweenSequenceItem<double>> get tweenSequenceItems =>

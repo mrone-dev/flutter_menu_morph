@@ -28,7 +28,7 @@ const like = 'sample';
   ### Animation
   - [x] Animation after the item goes back to origin position
   - [ ] Options to add more animation type after the item goes back to origin position
-  - [ ] Item initialize animation or loading animation when fetching menu list
+  - [x] Item initialize animation or loading animation when fetching menu list
       - [x] Style 1: parent only
       - [x] Style 2: parent then children sequentially (have delay)
       - [x] Style 3: parent and children start animation at the same time
@@ -44,3 +44,4 @@ const like = 'sample';
   - [ ] Responsive UI (item's radius, spacing)
 ## TO VERIFY
   - [x] Already has data (without fetch data from BE) then starts animation once.
+## Add more animation style
