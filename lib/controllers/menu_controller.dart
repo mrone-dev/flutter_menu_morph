@@ -149,18 +149,18 @@ class MenuBox2DController<T> with ChangeNotifier {
   }
 
   List<Vector2> _calculateItemPositions(Vector2 center) {
-    var radiusO = configuration.parentRadius;
-    var radiusR1 = configuration.childRadius;
+    var parentRadius = configuration.parentRadius;
+    var childRadius = configuration.childRadius;
     var boxWidth = boardSizePixels.width;
     var boxHeight = boardSizePixels.height;
-    var space = configuration.padding.collapsedSize.width / 2;
 
     var angles = configuration.type.angles;
 
     List<Vector2> results = [];
     // Calculate the maximum distance to keep circles inside the box
-    double maxD = min((boxWidth / 2) - radiusR1, (boxHeight / 2) - radiusR1);
-    double d = radiusO + radiusR1 + space;
+    double maxD =
+        min((boxWidth / 2) - childRadius, (boxHeight / 2) - childRadius);
+    double d = parentRadius + childRadius + configuration.space;
     double adjustedD = min(d, maxD);
 
     for (var angle in angles) {

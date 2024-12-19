@@ -41,7 +41,7 @@ const like = 'sample';
   - [ ] Allow to add custom shape instead of circle
   ### Responsive
   - [ ] Handle device rotation
-  - [ ] Responsive UI (item's radius, spacing)
+  - [x] Responsive UI (item's radius, spacing)
 ## TO VERIFY
   - [x] Already has data (without fetch data from BE) then starts animation once.
 ## Add more animation style
