@@ -48,15 +48,7 @@ class MenuBox2DController<T> with ChangeNotifier {
     var centerPosition =
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
-    // TODO: check with other types
-    var positions = _drawHexagonCircles(
-      centerPosition,
-      configuration.parentRadius,
-      configuration.childRadius,
-      boardSizePixels.width,
-      boardSizePixels.height,
-      16.0,
-    );
+    var positions = _calculateItemPositions(centerPosition);
     var parent = _createMenuItemBox2D(
       centerPosition,
       configuration.parentRadius,
@@ -156,22 +148,22 @@ class MenuBox2DController<T> with ChangeNotifier {
     return body;
   }
 
-  List<Vector2> _drawHexagonCircles(
-    Vector2 center,
-    double radiusO,
-    double radiusR1,
-    double boxWidth,
-    double boxHeight,
-    double space,
-  ) {
+  List<Vector2> _calculateItemPositions(Vector2 center) {
+    var radiusO = configuration.parentRadius;
+    var radiusR1 = configuration.childRadius;
+    var boxWidth = boardSizePixels.width;
+    var boxHeight = boardSizePixels.height;
+    var space = configuration.padding.collapsedSize.width / 2;
+
+    var angles = configuration.type.angles;
+
     List<Vector2> results = [];
     // Calculate the maximum distance to keep circles inside the box
     double maxD = min((boxWidth / 2) - radiusR1, (boxHeight / 2) - radiusR1);
     double d = radiusO + radiusR1 + space;
     double adjustedD = min(d, maxD);
 
-    for (int i = 0; i < 6; i++) {
-      double angle = (pi / 3) * i + (pi / 6); // 60 degrees in radians
+    for (var angle in angles) {
       double x = center.x + adjustedD * cos(angle);
       double y = center.y + adjustedD * sin(angle);
 

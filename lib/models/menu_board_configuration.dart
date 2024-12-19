@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 enum MenuMorphType {
   hexagon(6),
@@ -7,6 +8,28 @@ enum MenuMorphType {
 
   const MenuMorphType(this.count);
   final int count;
+
+  List<double> get angles => switch (this) {
+        hexagon => [
+            0, // right
+            math.pi / 3, // top-right
+            2 * math.pi / 3, // top-left
+            math.pi, // left
+            4 * math.pi / 3, // bottom-left
+            5 * math.pi / 3, // bottom-right
+          ],
+        triangle => [
+            -math.pi / 2, // top
+            math.pi / 6, // bottom-right
+            5 * math.pi / 6, // bottom-left
+          ],
+        rectangle => [
+            -math.pi / 2, // top
+            0, // right
+            math.pi / 2, // bottom
+            math.pi, // left
+          ],
+      };
 }
 
 enum LoadingAnimationStyle {

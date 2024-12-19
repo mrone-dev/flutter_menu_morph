@@ -23,8 +23,8 @@ const like = 'sample';
   - [x] MVP version
   ### Menu morph
   - [x] Hexagon
-  - [ ] Triangle
-  - [ ] Rectangle
+  - [x] Triangle
+  - [x] Rectangle
   ### Animation
   - [x] Animation after the item goes back to origin position
   - [ ] Options to add more animation type after the item goes back to origin position
@@ -32,7 +32,7 @@ const like = 'sample';
       - [x] Style 1: parent only
       - [x] Style 2: parent then children sequentially (have delay)
       - [x] Style 3: parent and children start animation at the same time
-  - [ ] Customize animation (weight, duration, curve)
+  - [x] Customize animation (weight, duration, curve)
   ### Menu actions
   - [ ] Add "on press" CTA
   - [ ] Handle nested categories

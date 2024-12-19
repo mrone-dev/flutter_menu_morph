@@ -6,17 +6,32 @@ import 'package:svg_flutter/svg_flutter.dart';
 import 'example_data_model.dart';
 
 mixin CarCategoryMixin {
-  MenuBoardData<CarCategory> getExampleData() {
+  MenuBoardData<CarCategory> getExampleData(MenuMorphType type) {
+    var categories = switch (type) {
+      MenuMorphType.hexagon => [
+          CarCategory.child1(),
+          CarCategory.child2(),
+          CarCategory.child3(),
+          CarCategory.child4(),
+          CarCategory.child5(),
+          CarCategory.child6(),
+        ],
+      MenuMorphType.triangle => [
+          CarCategory.child1(),
+          CarCategory.child2(),
+          CarCategory.child3(),
+        ],
+      MenuMorphType.rectangle => [
+          CarCategory.child1(),
+          CarCategory.child2(),
+          CarCategory.child3(),
+          CarCategory.child4(),
+        ],
+    };
+
     return MenuBoardData(
       parent: _getMenuItem(CarCategory.parent()),
-      children: [
-        _getMenuItem(CarCategory.child1()),
-        _getMenuItem(CarCategory.child2()),
-        _getMenuItem(CarCategory.child3()),
-        _getMenuItem(CarCategory.child4()),
-        _getMenuItem(CarCategory.child5()),
-        _getMenuItem(CarCategory.child6()),
-      ],
+      children: [...categories.map((e) => _getMenuItem(e))],
     );
   }
 

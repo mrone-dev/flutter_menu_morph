@@ -28,7 +28,7 @@ class _ExampleScreen2State extends State<ExampleScreen2> with CarCategoryMixin {
   }
 
   MenuBoardData<CarCategory> _getInitialData() {
-    return getExampleData();
+    return getExampleData(widget.type);
   }
 
   @override

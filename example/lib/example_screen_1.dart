@@ -28,7 +28,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> with CarCategoryMixin {
 
     // fetch data
     Future.delayed(const Duration(seconds: 5)).then((_) {
-      _menuController.updateMenuBoardData(getExampleData());
+      _menuController.updateMenuBoardData(getExampleData(widget.type));
     });
   }
 
