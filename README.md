@@ -23,12 +23,16 @@ const like = 'sample';
   - [x] MVP version
   ### Menu morph
   - [x] Hexagon
-  - [ ] Triangle
-  - [ ] Rectangle
+  - [x] Triangle
+  - [x] Rectangle
   ### Animation
   - [x] Animation after the item goes back to origin position
   - [ ] Options to add more animation type after the item goes back to origin position
-  - [ ] Item initialize animation or loading animation when fetching menu list
+  - [x] Item initialize animation or loading animation when fetching menu list
+      - [x] Style 1: parent only
+      - [x] Style 2: parent then children sequentially (have delay)
+      - [x] Style 3: parent and children start animation at the same time
+  - [x] Customize animation (weight, duration, curve)
   ### Menu actions
   - [ ] Add "on press" CTA
   - [ ] Handle nested categories
@@ -37,4 +41,7 @@ const like = 'sample';
   - [ ] Allow to add custom shape instead of circle
   ### Responsive
   - [ ] Handle device rotation
-  - [ ] Responsive UI (item's radius, spacing)
+  - [x] Responsive UI (item's radius, spacing)
+## TO VERIFY
+  - [x] Already has data (without fetch data from BE) then starts animation once.
+## Add more animation style
