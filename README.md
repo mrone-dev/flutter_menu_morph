@@ -46,3 +46,5 @@ const like = 'sample';
 ## TO VERIFY
   - [x] Already has data (without fetch data from BE) then starts animation once.
 ## Add more animation style
+## Improvement:
+  - [ ] Improve contact management
