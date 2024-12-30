@@ -46,28 +46,28 @@ enum LoadingAnimationStyle {
 
 class MenuBoardConfiguration<T> {
   final MenuMorphType type;
-  final Size boardSizePixels;
 
   /// [parentRadius] will be prioritized.
   final double parentRadius;
+
+  /// [childRadius] will be verify again
   final double childRadius;
   final LoadingConfiguration loadingConfiguration;
-  final EdgeInsetsGeometry padding;
 
   /// space between parent and child
   final double space;
+  final bool startAnimationAfterRotation;
 
   /// will enable [world.drawDebugData]
   final bool isDebug;
 
   const MenuBoardConfiguration({
     required this.type,
-    required this.boardSizePixels,
     required this.parentRadius,
     required this.childRadius,
-    this.padding = const EdgeInsets.all(16.0),
     this.loadingConfiguration = LoadingConfiguration.style1,
     this.space = 16.0,
+    this.startAnimationAfterRotation = false,
     this.isDebug = false,
   });
 
