@@ -8,11 +8,12 @@ import 'draggable_item/draggable_item.dart';
 
 class MenuBoard<T> extends StatefulWidget {
   final MenuBoardConfiguration<T> configuration;
+  final Size boardSizePixels;
   final ValueChanged<MenuBox2DController<T>>? onMenuCreated;
   final MenuBoardData<T>? initialData;
-
   const MenuBoard({
     required this.configuration,
+    required this.boardSizePixels,
     this.onMenuCreated,
     this.initialData,
     super.key,
@@ -40,7 +41,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
     _menuController = MenuBox2DController<T>(
       configuration: widget.configuration,
       initialData: widget.initialData,
-    )..initialize();
+    )..initialize(widget.boardSizePixels);
     widget.onMenuCreated?.call(_menuController);
     _animationCtrl.addListener(() {
       _onAnimationUpdate();
@@ -51,7 +52,9 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
   @override
   void didUpdateWidget(covariant MenuBoard<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // TODO handle rotation
+    if (oldWidget.boardSizePixels != widget.boardSizePixels) {
+      _menuController.handleOrientationChange(widget.boardSizePixels);
+    }
   }
 
   @override
@@ -88,6 +91,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
 
   Widget _buildMainBoard() {
     return Stack(
+      alignment: AlignmentDirectional.center,
       fit: StackFit.expand,
       children: [
         if (_isDebug) _buildDebugDraw(),

@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   MenuMorphType _selectedType = MenuMorphType.hexagon;
-  LoadingAnimationStyle _selectedAnimationType = LoadingAnimationStyle.style1;
+  LoadingAnimationStyle _selectedAnimationType = LoadingAnimationStyle.style2;
 
   void _onChangedMorphType(MenuMorphType type) {
     setState(() {

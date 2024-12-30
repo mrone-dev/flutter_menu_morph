@@ -20,9 +20,9 @@ class MenuBox2DController<T> with ChangeNotifier {
 
   MenuStateStatus status = MenuStateStatus.pending;
   late final World world;
-  late final MenuState<T> state;
-
-  Size get boardSizePixels => configuration.boardSizePixels;
+  late MenuState<T> state;
+  late Size boardSizePixels;
+  late double _childRadius;
 
   MenuItemBox2D get parentBox => state.parentBox;
 
@@ -41,7 +41,8 @@ class MenuBox2DController<T> with ChangeNotifier {
 
   bool get isDebug => configuration.isDebug;
 
-  void initialize() {
+  void initialize(Size size) {
+    boardSizePixels = size;
     settings.maxTranslation = 4.0;
     world = World(Vector2.zero());
 
@@ -49,7 +50,8 @@ class MenuBox2DController<T> with ChangeNotifier {
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
     var positions = _calculateItemPositions(centerPosition);
-    var parent = _createMenuItemBox2D(
+    var parent = MenuItemBox2D.newItemBox2D(
+      world,
       centerPosition,
       configuration.parentRadius,
     );
@@ -59,9 +61,10 @@ class MenuBox2DController<T> with ChangeNotifier {
       initialData: initialData,
       childrenBox: List.generate(
         configuration.type.count,
-        (index) => _createMenuItemBox2D(
+        (index) => MenuItemBox2D.newItemBox2D(
+          world,
           positions.elementAt(index),
-          configuration.childRadius,
+          _childRadius,
         ),
       ).asMap(),
     );
@@ -70,14 +73,16 @@ class MenuBox2DController<T> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// user moving items
   /// update all [Body] type to [BodyType.static] to prevent collisions
-  void userMovingItems() {
+  void setChildBodiesToStatic() {
     for (var body in allBodies) {
       body.setType(BodyType.static);
     }
   }
 
-  void userStopMovingItems() {
+  /// user stop moving items
+  void setChildBodiesToDynamic() {
     for (var body in allBodies) {
       body.setType(BodyType.dynamic);
     }
@@ -102,50 +107,16 @@ class MenuBox2DController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  MenuItemBox2D _createMenuItemBox2D(
-    Vector2 position,
-    double radius,
-  ) {
-    var body = _createMenuItemBody(
-      position,
-      radius,
-    );
-    var box2D = MenuItemBox2D(
-      body: body,
-      originPosition: position,
-      radius: radius,
-    );
-    body.userData = box2D;
-    return box2D;
-  }
+  void handleOrientationChange(Size size) {
+    boardSizePixels = size;
+    var centerPosition =
+        Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
-  Body _createMenuItemBody(
-    Vector2 position,
-    double radius, [
-    Vector2? linearVelocity,
-  ]) {
-    var bodyDef = BodyDef(
-      type: BodyType.dynamic,
-      position: position,
-      linearDamping: 0,
-      allowSleep: false,
-      fixedRotation: true,
-      linearVelocity: linearVelocity,
-    );
-
-    var body = world.createBody(bodyDef);
-    var circleShape = CircleShape(
-      radius: radius,
-    );
-    var fixtureDef = FixtureDef(
-      circleShape,
-      friction: 0.0,
-      restitution: 1,
-      density: 0.0,
-      isSensor: true,
-    );
-    body.createFixture(fixtureDef);
-    return body;
+    var positions = _calculateItemPositions(centerPosition);
+    setChildBodiesToStatic();
+    state = state.updateItemPositions(centerPosition, positions, _childRadius);
+    notifyListeners();
+    setChildBodiesToDynamic();
   }
 
   List<Vector2> _calculateItemPositions(Vector2 center) {
@@ -153,19 +124,28 @@ class MenuBox2DController<T> with ChangeNotifier {
     var childRadius = configuration.childRadius;
     var boxWidth = boardSizePixels.width;
     var boxHeight = boardSizePixels.height;
-
     var angles = configuration.type.angles;
 
     List<Vector2> results = [];
-    // Calculate the maximum distance to keep circles inside the box
-    double maxD =
-        min((boxWidth / 2) - childRadius, (boxHeight / 2) - childRadius);
-    double d = parentRadius + childRadius + configuration.space;
-    double adjustedD = min(d, maxD);
+
+    /// max radius from center
+    var maxRadius = min(
+      boxWidth / 2,
+      boxHeight / 2,
+    );
+
+    var availableChildRadius =
+        (maxRadius - configuration.space - parentRadius) / 2;
+    if (availableChildRadius < childRadius) {
+      _childRadius = availableChildRadius;
+    } else {
+      _childRadius = configuration.childRadius;
+    }
+    var adjustedDistance = _childRadius + configuration.space + parentRadius;
 
     for (var angle in angles) {
-      double x = center.x + adjustedD * cos(angle);
-      double y = center.y + adjustedD * sin(angle);
+      double x = center.x + adjustedDistance * cos(angle);
+      double y = center.y + adjustedDistance * sin(angle);
 
       // Create and position each circle at (x, y)
       results.add(Vector2(x, y));

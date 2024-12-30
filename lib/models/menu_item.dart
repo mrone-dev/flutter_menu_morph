@@ -100,6 +100,41 @@ class MenuItemBox2D {
 
   bool _isCollided = false;
 
+  factory MenuItemBox2D.newItemBox2D(
+    World world,
+    Vector2 position,
+    double radius,
+  ) {
+    var body = _createMenuItemBody(
+      world,
+      position,
+      radius,
+    );
+    var box2D = MenuItemBox2D(
+      body: body,
+      originPosition: position,
+      radius: radius,
+    );
+    body.userData = box2D;
+    return box2D;
+  }
+
+  /// for device orientation
+  /// it will update [originPosition] and [body.position]
+  MenuItemBox2D updatePositionAndRadius(Vector2 position, [double? radius]) {
+    // update body + shape
+    if (radius != null) {
+      body.fixtures.first.shape.radius = radius;
+    }
+    body.setTransform(position, body.angle);
+
+    return MenuItemBox2D(
+      body: body,
+      originPosition: position,
+      radius: radius ?? this.radius,
+    );
+  }
+
   void onPanStart() {
     prioritized = true;
   }
@@ -171,6 +206,36 @@ class MenuItemBox2D {
     prioritized = false;
     body.linearVelocity = Vector2.zero();
     _widgetState?.startShakeAnimation();
+  }
+
+  static Body _createMenuItemBody(
+    World world,
+    Vector2 position,
+    double radius, [
+    Vector2? linearVelocity,
+  ]) {
+    var bodyDef = BodyDef(
+      type: BodyType.dynamic,
+      position: position,
+      linearDamping: 0,
+      allowSleep: false,
+      fixedRotation: true,
+      linearVelocity: linearVelocity,
+    );
+
+    var body = world.createBody(bodyDef);
+    var circleShape = CircleShape(
+      radius: radius,
+    );
+    var fixtureDef = FixtureDef(
+      circleShape,
+      friction: 0.0,
+      restitution: 1,
+      density: 0.0,
+      isSensor: true,
+    );
+    body.createFixture(fixtureDef);
+    return body;
   }
 
   @override

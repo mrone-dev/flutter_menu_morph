@@ -65,13 +65,13 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
   }
 
   void _onPanEnd(DragEndDetails details) {
-    _controller.userStopMovingItems();
+    _controller.setChildBodiesToDynamic();
     _itemBox2D.onPanEnd();
   }
 
   void _onPanStart(DragStartDetails details) {
     _itemBox2D.onPanStart();
-    _controller.userMovingItems();
+    _controller.setChildBodiesToStatic();
     stopShakeAnimation();
   }
 
@@ -94,7 +94,6 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
       },
       child: FractionalTranslation(
         translation: const Offset(-.5, -.5),
-        // child: hasLoadingAnimation || _item != null
         child: hasLoadingAnimation || _item != null
             ? _buildGestureItem()
             : const SizedBox.shrink(),
