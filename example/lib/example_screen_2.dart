@@ -35,23 +35,26 @@ class _ExampleScreen2State extends State<ExampleScreen2> with CarCategoryMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return MenuBoard<CarCategory>(
-            onMenuCreated: _onMenuCreated,
-            initialData: _getInitialData(),
-            configuration: MenuBoardConfiguration(
+      body: Container(
+        margin: EdgeInsets.all(16.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return MenuBoard<CarCategory>(
+              onMenuCreated: _onMenuCreated,
+              initialData: _getInitialData(),
               boardSizePixels: constraints.biggest,
-              type: widget.type,
-              loadingConfiguration: LoadingConfiguration(
-                style: widget.style,
-                duration: const Duration(seconds: 1),
+              configuration: MenuBoardConfiguration(
+                type: widget.type,
+                loadingConfiguration: LoadingConfiguration(
+                  style: widget.style,
+                  duration: const Duration(seconds: 1),
+                ),
+                parentRadius: 60,
+                childRadius: 50,
               ),
-              parentRadius: 60,
-              childRadius: 50,
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

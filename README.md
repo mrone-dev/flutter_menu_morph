@@ -39,9 +39,12 @@ const like = 'sample';
   - [ ] Disabled item
   ### Shape
   - [ ] Allow to add custom shape instead of circle
+  - [ ] Allow to add ratio between parent and children instead of fixed radius
   ### Responsive
   - [ ] Handle device rotation
   - [x] Responsive UI (item's radius, spacing)
 ## TO VERIFY
   - [x] Already has data (without fetch data from BE) then starts animation once.
 ## Add more animation style
+## Improvement:
+  - [ ] Improve contact management

@@ -1,3 +1,5 @@
+import 'package:forge2d/forge2d.dart';
+
 import 'menu_item.dart';
 
 enum MenuStateStatus {
@@ -31,5 +33,28 @@ class MenuState<T> {
 
   void updateMenuBoardData(MenuBoardData<T> data) {
     _data = data;
+  }
+
+  MenuState<T> updateItemPositions(
+    Vector2 parentPosition,
+    List<Vector2> childrenPositions, [
+    double? childRadius,
+  ]) {
+    var updatedChildrenBox = Map<int, MenuItemBox2D>.from(childrenBox);
+    for (var i = 0; i < childrenPositions.length; i++) {
+      updatedChildrenBox.update(
+        i,
+        (value) => value.updatePositionAndRadius(
+          childrenPositions.elementAt(i),
+          childRadius,
+        ),
+      );
+    }
+
+    return MenuState<T>(
+      parentBox: parentBox.updatePositionAndRadius(parentPosition),
+      childrenBox: updatedChildrenBox,
+      initialData: this.initialData,
+    );
   }
 }
