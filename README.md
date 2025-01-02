@@ -34,17 +34,18 @@ const like = 'sample';
       - [x] Style 3: parent and children start animation at the same time
   - [x] Customize animation (weight, duration, curve)
   ### Menu actions
-  - [ ] Add "on press" CTA
+  - [x] Add "on press" CTA
   - [ ] Handle nested categories
   - [ ] Disabled item
   ### Shape
   - [ ] Allow to add custom shape instead of circle
   - [ ] Allow to add ratio between parent and children instead of fixed radius
   ### Responsive
-  - [ ] Handle device rotation
+  - [x] Handle device rotation
   - [x] Responsive UI (item's radius, spacing)
 ## TO VERIFY
   - [x] Already has data (without fetch data from BE) then starts animation once.
 ## Add more animation style
+  - [ ] More pressing effect for MenuItem widget
 ## Improvement:
   - [ ] Improve contact management
