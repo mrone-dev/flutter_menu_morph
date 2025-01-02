@@ -44,15 +44,17 @@ class MenuItem<T> extends Equatable {
   final T data;
   final MenuItemWidgetBuilder<T> itemBuilder;
   final MenuItemCallback<T>? onPressed;
+  final bool enabled;
 
   const MenuItem({
     required this.data,
     required this.itemBuilder,
     this.onPressed,
+    this.enabled = true,
   });
 
   @override
-  List<Object?> get props => [data, itemBuilder, onPressed];
+  List<Object?> get props => [data, itemBuilder, onPressed, enabled];
 
   @override
   String toString() => 'MenuItem($data)';

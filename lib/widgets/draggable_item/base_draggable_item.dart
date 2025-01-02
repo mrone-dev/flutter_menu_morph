@@ -119,20 +119,13 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
   }
 
   Widget _buildMenuItem() {
-    return Container(
-      width: _itemBox2D.radius * 2,
-      height: _itemBox2D.radius * 2,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset.zero,
-          ),
-        ],
-      ),
+    return ElevationMenuItem(
+      radius: _itemBox2D.radius,
+      onPressed: () {
+        if (widget.item?.onPressed != null) {
+          return widget.item!.onPressed!.call(widget.item!.data);
+        }
+      },
       child: widget.item?.itemBuilder(context, widget.item!.data),
     );
   }

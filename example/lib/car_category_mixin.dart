@@ -41,6 +41,9 @@ mixin CarCategoryMixin {
       itemBuilder: (_, category) {
         return _buildCategory(category);
       },
+      onPressed: (data) {
+        debugPrint('clicked $data');
+      },
     );
   }
 

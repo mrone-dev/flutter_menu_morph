@@ -7,9 +7,10 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/menu_controller.dart';
 
+part 'base_draggable_item.dart';
+part 'gesture_menu_item.dart';
 part 'loading_item_animation.dart';
 part 'shake_item_animation.dart';
-part 'base_draggable_item.dart';
 
 class DraggableParentItem<T> extends BaseDraggableItem<T> {
   const DraggableParentItem({
