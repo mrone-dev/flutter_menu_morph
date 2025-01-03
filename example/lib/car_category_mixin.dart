@@ -5,7 +5,22 @@ import 'package:svg_flutter/svg_flutter.dart';
 
 import 'example_data_model.dart';
 
-mixin CarCategoryMixin {
+mixin CarCategoryMixin<T extends StatefulWidget> on State<T> {
+  MenuBox2DController<CarCategory> get menuController;
+  bool _isParent = true;
+
+  void enable() {
+    if (_isParent) {
+      menuController.enableParent();
+    } else {}
+  }
+
+  void disable() {
+    if (_isParent) {
+      menuController.disableParent();
+    } else {}
+  }
+
   MenuBoardData<CarCategory> getExampleData(MenuMorphType type) {
     var categories = switch (type) {
       MenuMorphType.hexagon => [
@@ -31,19 +46,68 @@ mixin CarCategoryMixin {
 
     return MenuBoardData(
       parent: _getMenuItem(CarCategory.parent()),
-      children: [...categories.map((e) => _getMenuItem(e))],
+      children: [...categories.map((e) => _getMenuItem(e, false))],
     );
   }
 
-  MenuItem<CarCategory> _getMenuItem(CarCategory category) {
+  MenuItem<CarCategory> _getMenuItem(CarCategory category,
+      [bool enabled = true]) {
     return MenuItem(
       data: category,
+      enabled: enabled,
       itemBuilder: (_, category) {
         return _buildCategory(category);
       },
       onPressed: (data) {
         debugPrint('clicked $data');
       },
+    );
+  }
+
+  BoxDecoration getBoxDecoration(
+    CarCategory category,
+    bool isPressed,
+  ) {
+    return BoxDecoration(
+      color: category.enabled ? Colors.white : Colors.black12,
+      shape: BoxShape.circle,
+    );
+  }
+
+  Widget buildStatusButtons() {
+    return SizedBox(
+      height: 64.0,
+      child: Row(
+        children: [
+          Checkbox(
+            value: _isParent,
+            onChanged: (value) {
+              setState(() {
+                _isParent = value!;
+              });
+            },
+          ),
+          Text('Parent'),
+          SizedBox(width: 16.0),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+            onPressed: enable,
+            child: Text(
+              'Enable',
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+          SizedBox(width: 16.0),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+            onPressed: disable,
+            child: Text(
+              'Disable',
+              style: const TextStyle(color: Colors.black),
+            ),
+          )
+        ],
+      ),
     );
   }
 

@@ -20,10 +20,40 @@ class MenuBoardData<T> {
     required this.children,
   });
 
-  void updateParent(MenuItem<T> parent) => _copyWith(parent: parent);
+  MenuBoardData<T> updateParent(MenuItem<T> parent) =>
+      _copyWith(parent: parent);
 
-  void updateChildren(List<MenuItem<T>> children) =>
+  MenuBoardData<T> updateChildren(List<MenuItem<T>> children) =>
       _copyWith(children: children);
+
+  MenuBoardData<T> enableParent() {
+    return updateParent(parent.enable());
+  }
+
+  MenuBoardData<T> disableParent() {
+    return updateParent(parent.disable());
+  }
+
+  /// if [indexes] is empty -> apply for all children
+  MenuBoardData<T> enableChildren([List<int> indexes = const []]) {
+    for (var i = 0; i < children.length; i++) {
+      if (indexes.isEmpty || indexes.contains(i)) {
+        children[i] = children[i].enable();
+      }
+    }
+
+    return updateChildren(children);
+  }
+
+  /// if [indexes] is empty -> apply for all children
+  MenuBoardData<T> disableChildren([List<int> indexes = const []]) {
+    for (var i = 0; i < children.length; i++) {
+      if (indexes.isEmpty || indexes.contains(i)) {
+        children[i] = children[i].disable();
+      }
+    }
+    return updateChildren(children);
+  }
 
   MenuBoardData<T> _copyWith({
     MenuItem<T>? parent,
@@ -52,6 +82,24 @@ class MenuItem<T> extends Equatable {
     this.onPressed,
     this.enabled = true,
   });
+
+  MenuItem<T> enable() {
+    return MenuItem<T>(
+      data: this.data,
+      itemBuilder: this.itemBuilder,
+      onPressed: this.onPressed,
+      enabled: true,
+    );
+  }
+
+  MenuItem<T> disable() {
+    return MenuItem<T>(
+      data: this.data,
+      itemBuilder: this.itemBuilder,
+      onPressed: this.onPressed,
+      enabled: false,
+    );
+  }
 
   @override
   List<Object?> get props => [data, itemBuilder, onPressed, enabled];

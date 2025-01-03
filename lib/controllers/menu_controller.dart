@@ -119,6 +119,16 @@ class MenuBox2DController<T> with ChangeNotifier {
     setChildBodiesToDynamic();
   }
 
+  void enableParent() {
+    state.enableParent();
+    notifyListeners();
+  }
+
+  void disableParent() {
+    state.disableParent();
+    notifyListeners();
+  }
+
   List<Vector2> _calculateItemPositions(Vector2 center) {
     var parentRadius = configuration.parentRadius;
     var childRadius = configuration.childRadius;

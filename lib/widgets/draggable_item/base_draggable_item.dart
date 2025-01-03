@@ -103,7 +103,9 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
 
   Widget _buildGestureItem() {
     return IgnorePointer(
-      ignoring: isAnimating,
+      ignoring: isAnimating
+          ? isAnimating
+          : (widget.item?.enabled != null ? !widget.item!.enabled : true),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanStart: _onPanStart,
@@ -119,14 +121,9 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
   }
 
   Widget _buildMenuItem() {
-    return ElevationMenuItem(
+    return ElevationMenuItem<T>(
       radius: _itemBox2D.radius,
-      onPressed: () {
-        if (widget.item?.onPressed != null) {
-          return widget.item!.onPressed!.call(widget.item!.data);
-        }
-      },
-      child: widget.item?.itemBuilder(context, widget.item!.data),
+      item: widget.item,
     );
   }
 }

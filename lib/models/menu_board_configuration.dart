@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+typedef BoxDecorationBuilder<T> = BoxDecoration Function(
+  T data,
+  bool isPressed,
+);
+
 enum MenuMorphType {
   hexagon(6),
   triangle(3),
@@ -57,6 +62,7 @@ class MenuBoardConfiguration<T> {
   /// space between parent and child
   final double space;
   final bool startAnimationAfterRotation;
+  final BoxDecorationBuilder<T>? decorationBuilder;
 
   /// will enable [world.drawDebugData]
   final bool isDebug;
@@ -68,6 +74,7 @@ class MenuBoardConfiguration<T> {
     this.loadingConfiguration = LoadingConfiguration.style1,
     this.space = 16.0,
     this.startAnimationAfterRotation = false,
+    this.decorationBuilder,
     this.isDebug = false,
   });
 
