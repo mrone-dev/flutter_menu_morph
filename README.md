@@ -36,7 +36,7 @@ const like = 'sample';
   ### Menu actions
   - [x] Add "on press" CTA
   - [ ] Handle nested categories
-  - [ ] Disabled item
+  - [x] Disabled item
   ### Shape
   - [ ] Allow to add custom shape instead of circle
   - [ ] Allow to add ratio between parent and children instead of fixed radius

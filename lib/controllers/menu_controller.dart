@@ -129,6 +129,16 @@ class MenuBox2DController<T> with ChangeNotifier {
     notifyListeners();
   }
 
+  void enableChildren([List<int> indexes = const []]) {
+    state.enableChildren(indexes);
+    notifyListeners();
+  }
+
+  void disableChildren([List<int> indexes = const []]) {
+    state.disableChildren(indexes);
+    notifyListeners();
+  }
+
   List<Vector2> _calculateItemPositions(Vector2 center) {
     var parentRadius = configuration.parentRadius;
     var childRadius = configuration.childRadius;
