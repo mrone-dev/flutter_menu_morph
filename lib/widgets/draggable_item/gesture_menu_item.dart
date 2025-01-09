@@ -85,7 +85,8 @@ class _ElevationMenuItemState<T>
   }
 
   BoxDecoration _buildBoxDecoration() {
-    if (_controller.configuration.decorationBuilder != null) {
+    if (_controller.configuration.decorationBuilder != null &&
+        widget.item != null) {
       return _controller.configuration.decorationBuilder!(
         widget.item!.data,
         _isPressed,
