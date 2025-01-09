@@ -1,18 +1,19 @@
 name: flutter_menu_morph
 description: "mrone.dev"
 version: 0.0.1
-homepage:
+homepage: https://mrone.dev/
+repository: https://github.com/mrone-dev/flutter_menu_morph
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
-  flutter: 3.27.0
+  flutter: '>=3.27.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  forge2d:
-  equatable:
-  provider:
+  forge2d: ^0.14.0
+  equatable: ^2.0.7
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
