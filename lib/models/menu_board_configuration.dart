@@ -76,7 +76,7 @@ class MenuBoardConfiguration<T> extends Equatable {
     required this.parentRadius,
     required this.childRadius,
     this.loadingConfiguration = LoadingConfiguration.style1,
-    this.space = 16.0,
+    this.space = 12.0,
     this.startAnimationAfterRotation = false,
     this.decorationBuilder,
     this.itemPadding = const EdgeInsets.all(8.0),

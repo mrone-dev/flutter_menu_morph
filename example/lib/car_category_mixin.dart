@@ -131,6 +131,7 @@ mixin CarCategoryMixin<T extends StatefulWidget> on State<T> {
           category.imagePath,
           width: 32.0,
           height: 32.0,
+          colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
         ),
       ],
     );
