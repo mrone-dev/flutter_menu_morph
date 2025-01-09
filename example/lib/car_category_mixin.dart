@@ -12,13 +12,17 @@ mixin CarCategoryMixin<T extends StatefulWidget> on State<T> {
   void enable() {
     if (_isParent) {
       menuController.enableParent();
-    } else {}
+    } else {
+      menuController.enableChildren();
+    }
   }
 
   void disable() {
     if (_isParent) {
       menuController.disableParent();
-    } else {}
+    } else {
+      menuController.disableChildren();
+    }
   }
 
   MenuBoardData<CarCategory> getExampleData(MenuMorphType type) {
