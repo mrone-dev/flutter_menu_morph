@@ -35,9 +35,28 @@ class MenuState<T> {
     _data = data;
   }
 
+  void enableParent() {
+    updateMenuBoardData(_data!.enableParent());
+  }
+
+  void disableParent() {
+    updateMenuBoardData(_data!.disableParent());
+  }
+
+  /// if [indexes] is empty -> apply for all children
+  void enableChildren([List<int> indexes = const []]) {
+    updateMenuBoardData(_data!.enableChildren(indexes));
+  }
+
+  /// if [indexes] is empty -> apply for all children
+  void disableChildren([List<int> indexes = const []]) {
+    updateMenuBoardData(_data!.disableChildren(indexes));
+  }
+
   MenuState<T> updateItemPositions(
     Vector2 parentPosition,
     List<Vector2> childrenPositions, [
+    double? parentRadius,
     double? childRadius,
   ]) {
     var updatedChildrenBox = Map<int, MenuItemBox2D>.from(childrenBox);
@@ -52,7 +71,8 @@ class MenuState<T> {
     }
 
     return MenuState<T>(
-      parentBox: parentBox.updatePositionAndRadius(parentPosition),
+      parentBox:
+          parentBox.updatePositionAndRadius(parentPosition, parentRadius),
       childrenBox: updatedChildrenBox,
       initialData: this.initialData,
     );

@@ -1,7 +1,12 @@
 class CarCategory {
   final String name;
   final String imagePath;
-  const CarCategory(this.name, this.imagePath);
+  final bool enabled;
+  const CarCategory(
+    this.name,
+    this.imagePath, {
+    this.enabled = true,
+  });
 
   factory CarCategory.parent() =>
       const CarCategory('Car', 'assets/icons/car.svg');
@@ -18,4 +23,12 @@ class CarCategory {
       const CarCategory('Maserati', 'assets/icons/maserati.svg');
   factory CarCategory.child6() =>
       const CarCategory('Peugeot', 'assets/icons/peugeot.svg');
+
+  CarCategory enable() {
+    return CarCategory(name, imagePath, enabled: true);
+  }
+
+  CarCategory disable() {
+    return CarCategory(name, imagePath, enabled: false);
+  }
 }

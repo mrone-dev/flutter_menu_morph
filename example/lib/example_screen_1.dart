@@ -21,6 +21,9 @@ class ExampleScreen1 extends StatefulWidget {
 class _ExampleScreen1State extends State<ExampleScreen1> with CarCategoryMixin {
   late MenuBox2DController<CarCategory> _menuController;
 
+  @override
+  MenuBox2DController<CarCategory> get menuController => _menuController;
+
   void _onMenuCreated(
     MenuBox2DController<CarCategory> controller,
   ) async {
@@ -51,6 +54,7 @@ class _ExampleScreen1State extends State<ExampleScreen1> with CarCategoryMixin {
                 ),
                 parentRadius: 60,
                 childRadius: 50,
+                decorationBuilder: getBoxDecoration,
               ),
             );
           },

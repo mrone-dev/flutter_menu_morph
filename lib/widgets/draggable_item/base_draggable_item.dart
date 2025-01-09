@@ -103,7 +103,9 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
 
   Widget _buildGestureItem() {
     return IgnorePointer(
-      ignoring: isAnimating,
+      ignoring: isAnimating
+          ? isAnimating
+          : (widget.item?.enabled != null ? !widget.item!.enabled : true),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onPanStart: _onPanStart,
@@ -119,21 +121,9 @@ class BaseDraggableItemState<T> extends State<BaseDraggableItem<T>>
   }
 
   Widget _buildMenuItem() {
-    return Container(
-      width: _itemBox2D.radius * 2,
-      height: _itemBox2D.radius * 2,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset.zero,
-          ),
-        ],
-      ),
-      child: widget.item?.itemBuilder(context, widget.item!.data),
+    return ElevationMenuItem<T>(
+      radius: _itemBox2D.radius,
+      item: widget.item,
     );
   }
 }
