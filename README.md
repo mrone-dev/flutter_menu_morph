@@ -49,3 +49,6 @@ const like = 'sample';
   - [ ] More pressing effect for MenuItem widget
 ## Improvement:
   - [ ] Improve contact management
+  - [ ] Default builder for [_getMenuItem]
+## Bugs:
+  - [ ] Configuration changed
