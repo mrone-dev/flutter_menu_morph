@@ -16,7 +16,7 @@ abstract class BaseMenuItemAction<T> extends StatefulWidget {
 abstract class BaseMenuItemActionState<T, W extends BaseMenuItemAction<T>>
     extends State<W> {
   bool _isPressed = false;
-  late final MenuBox2DController _controller;
+  late final MenuBox2DController<T> _controller;
 
   @override
   void initState() {
@@ -76,6 +76,7 @@ class _ElevationMenuItemState<T>
         child: Container(
           width: widget.radius * 2,
           height: widget.radius * 2,
+          padding: _controller.configuration.itemPadding,
           decoration: _buildBoxDecoration(),
           child: widget.item?.itemBuilder(context, widget.item!.data),
         ),
@@ -85,8 +86,10 @@ class _ElevationMenuItemState<T>
 
   BoxDecoration _buildBoxDecoration() {
     if (_controller.configuration.decorationBuilder != null) {
-      return _controller.configuration.decorationBuilder!
-          .call(widget.item, _isPressed);
+      return _controller.configuration.decorationBuilder!(
+        widget.item!.data,
+        _isPressed,
+      );
     }
     return BoxDecoration(
       color: (widget.item?.enabled ?? true) ? Colors.white : Colors.black12,
