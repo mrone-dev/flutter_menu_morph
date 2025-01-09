@@ -177,7 +177,6 @@ class MenuItemBox2D {
       body.fixtures.first.shape.radius = radius;
     }
     body.setTransform(position, body.angle);
-
     return MenuItemBox2D(
       body: body,
       originPosition: position,

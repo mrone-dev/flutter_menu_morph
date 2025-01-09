@@ -24,7 +24,7 @@ class MenuBoard<T> extends StatefulWidget {
 }
 
 class _MenuBoardState<T> extends State<MenuBoard<T>>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final AnimationController _animationCtrl = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 10),
@@ -36,10 +36,13 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
   MenuState<T> get _menuState => _menuController.state;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
     _menuController = MenuBox2DController<T>(
-      configuration: widget.configuration,
+      initialConfiguration: widget.configuration,
       initialData: widget.initialData,
     )..initialize(widget.boardSizePixels);
     widget.onMenuCreated?.call(_menuController);
@@ -52,8 +55,12 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
   @override
   void didUpdateWidget(covariant MenuBoard<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.configuration != widget.configuration) {
+      _menuController.handleConfigurationChanges(widget.configuration);
+    }
+
     if (oldWidget.boardSizePixels != widget.boardSizePixels) {
-      _menuController.handleOrientationChange(widget.boardSizePixels);
+      _menuController.handleOrientationChanges(widget.boardSizePixels);
     }
   }
 
@@ -74,6 +81,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ConstrainedBox(
       constraints: BoxConstraints.loose(_boardSizePixels),
       child: ChangeNotifierProvider.value(
@@ -107,6 +115,7 @@ class _MenuBoardState<T> extends State<MenuBoard<T>>
           },
         ),
         DraggableParentItem<T>(
+          key: _menuState.parentBox.globalKey,
           itemBox2D: _menuController.parentBox,
           item: _menuState.parent,
           index: MenuBox2DController.parentIndex,

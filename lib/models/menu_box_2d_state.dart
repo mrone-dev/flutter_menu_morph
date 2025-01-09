@@ -56,6 +56,7 @@ class MenuState<T> {
   MenuState<T> updateItemPositions(
     Vector2 parentPosition,
     List<Vector2> childrenPositions, [
+    double? parentRadius,
     double? childRadius,
   ]) {
     var updatedChildrenBox = Map<int, MenuItemBox2D>.from(childrenBox);
@@ -70,7 +71,8 @@ class MenuState<T> {
     }
 
     return MenuState<T>(
-      parentBox: parentBox.updatePositionAndRadius(parentPosition),
+      parentBox:
+          parentBox.updatePositionAndRadius(parentPosition, parentRadius),
       childrenBox: updatedChildrenBox,
       initialData: this.initialData,
     );

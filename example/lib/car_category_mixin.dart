@@ -46,7 +46,7 @@ mixin CarCategoryMixin<T extends StatefulWidget> on State<T> {
 
     return MenuBoardData(
       parent: _getMenuItem(CarCategory.parent()),
-      children: [...categories.map((e) => _getMenuItem(e, false))],
+      children: [...categories.map((e) => _getMenuItem(e, true))],
     );
   }
 

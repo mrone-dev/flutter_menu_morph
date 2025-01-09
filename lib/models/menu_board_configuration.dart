@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 typedef BoxDecorationBuilder<T> = BoxDecoration Function(
   T data,
@@ -49,7 +51,7 @@ enum LoadingAnimationStyle {
   style3,
 }
 
-class MenuBoardConfiguration<T> {
+class MenuBoardConfiguration<T> extends Equatable {
   final MenuMorphType type;
 
   /// [parentRadius] will be prioritized.
@@ -64,6 +66,8 @@ class MenuBoardConfiguration<T> {
   final bool startAnimationAfterRotation;
   final BoxDecorationBuilder<T>? decorationBuilder;
 
+  final EdgeInsets itemPadding;
+
   /// will enable [world.drawDebugData]
   final bool isDebug;
 
@@ -75,13 +79,27 @@ class MenuBoardConfiguration<T> {
     this.space = 16.0,
     this.startAnimationAfterRotation = false,
     this.decorationBuilder,
+    this.itemPadding = const EdgeInsets.all(8.0),
     this.isDebug = false,
   });
 
   LoadingAnimationStyle get loadingAnimationStyle => loadingConfiguration.style;
+
+  @override
+  List<Object?> get props => [
+        type,
+        parentRadius,
+        childRadius,
+        loadingConfiguration,
+        space,
+        startAnimationAfterRotation,
+        decorationBuilder,
+        itemPadding,
+        isDebug,
+      ];
 }
 
-class LoadingConfiguration {
+class LoadingConfiguration extends Equatable {
   final LoadingAnimationStyle style;
   final Duration duration;
   final List<TweenSequenceItem<double>> initialTweenSequenceItems;
@@ -116,4 +134,12 @@ class LoadingConfiguration {
       weight: 65.0,
     ),
   ];
+
+  @override
+  List<Object?> get props => [
+        style,
+        duration,
+        initialTweenSequenceItems,
+        delayStart,
+      ];
 }

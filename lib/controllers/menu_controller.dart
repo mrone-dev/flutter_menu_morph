@@ -9,12 +9,14 @@ import 'package:forge2d/src/settings.dart' as settings;
 import 'menu_contact_listener.dart';
 
 class MenuBox2DController<T> with ChangeNotifier {
-  final MenuBoardConfiguration configuration;
+  final MenuBoardConfiguration<T> initialConfiguration;
   final MenuBoardData<T>? initialData;
   MenuBox2DController({
-    required this.configuration,
+    required this.initialConfiguration,
     this.initialData,
-  });
+  }) {
+    configuration = initialConfiguration;
+  }
 
   static const int parentIndex = -1;
 
@@ -22,6 +24,7 @@ class MenuBox2DController<T> with ChangeNotifier {
   late final World world;
   late MenuState<T> state;
   late Size boardSizePixels;
+  late MenuBoardConfiguration<T> configuration;
   late double _childRadius;
 
   MenuItemBox2D get parentBox => state.parentBox;
@@ -50,6 +53,7 @@ class MenuBox2DController<T> with ChangeNotifier {
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
     var positions = _calculateItemPositions(centerPosition);
+    print('configuration.parentRadius ${configuration.parentRadius}');
     var parent = MenuItemBox2D.newItemBox2D(
       world,
       centerPosition,
@@ -107,14 +111,28 @@ class MenuBox2DController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  void handleOrientationChange(Size size) {
+  /// just quick fix atm
+  void handleConfigurationChanges(
+    MenuBoardConfiguration<T> updatedConfiguration,
+  ) {
+    configuration = updatedConfiguration;
+    notifyListeners();
+  }
+
+  void handleOrientationChanges(Size size) {
     boardSizePixels = size;
     var centerPosition =
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
     var positions = _calculateItemPositions(centerPosition);
     setChildBodiesToStatic();
-    state = state.updateItemPositions(centerPosition, positions, _childRadius);
+    state = state.updateItemPositions(
+      centerPosition,
+      positions,
+      // parent is prioritized -> no need to calculate
+      configuration.parentRadius,
+      _childRadius,
+    );
     notifyListeners();
     setChildBodiesToDynamic();
   }
@@ -150,8 +168,8 @@ class MenuBox2DController<T> with ChangeNotifier {
 
     /// max radius from center
     var maxRadius = min(
-      boxWidth / 2,
-      boxHeight / 2,
+      (boxWidth / 2) - configuration.space,
+      (boxHeight / 2) - configuration.space,
     );
 
     var availableChildRadius =
@@ -161,6 +179,7 @@ class MenuBox2DController<T> with ChangeNotifier {
     } else {
       _childRadius = configuration.childRadius;
     }
+
     var adjustedDistance = _childRadius + configuration.space + parentRadius;
 
     for (var angle in angles) {
