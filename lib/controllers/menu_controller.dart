@@ -53,7 +53,6 @@ class MenuBox2DController<T> with ChangeNotifier {
         Vector2(boardSizePixels.width / 2, boardSizePixels.height / 2);
 
     var positions = _calculateItemPositions(centerPosition);
-    print('configuration.parentRadius ${configuration.parentRadius}');
     var parent = MenuItemBox2D.newItemBox2D(
       world,
       centerPosition,
